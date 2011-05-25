@@ -1,0 +1,10 @@
+syntax: glob
+
+*.pyc
+*.py~
+*.swp
+
+build
+dist
+tmp
+__pycache__
