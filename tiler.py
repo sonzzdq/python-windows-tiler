@@ -70,20 +70,24 @@ class Tiler:
     def decrease_masterarea_width(self):
         "Decreases the masterarea width by 100px"
 
-        #decrease master areaWidth 
-        self.masterareaWidth -= 100
-        print("master area -= 100")
+        if self.masterareaWidth >= 100:
 
-        self.tile_windows()
+            #decrease master areaWidth 
+            self.masterareaWidth -= 100
+            print("master area -= 100")
+
+            self.tile_windows()
 
     def increase_masterarea_width(self):
         "Increases the masterarea width by 100px"
 
-        #increase master areaWidth 
-        self.masterareaWidth += 100
-        print("master area += 100")
+        if self.width - self.masterareaWidth >= 100:
 
-        self.tile_windows()
+            #increase master areaWidth 
+            self.masterareaWidth += 100
+            print("master area += 100")
+
+            self.tile_windows()
 
     def set_focus_down(self):
         "Sets focus on the next window"

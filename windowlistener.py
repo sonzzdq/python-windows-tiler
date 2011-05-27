@@ -10,9 +10,10 @@ from win32con import SW_SHOWNORMAL
 
 class WindowListener:
 
-    def __init__(self, ignoreList):
+    def __init__(self, floatList):
 
-        self.ignoreList = ignoreList
+        self.floatList = floatList
+        self.stop = False
 
     def callback (self, window, resultList):
         "Callback function for EnumWindows"
@@ -43,7 +44,7 @@ class WindowListener:
 
         print ("start loop")
 
-        while True:
+        while not self.stop:
 
             time.sleep(0.1)
 
@@ -58,7 +59,7 @@ class WindowListener:
 
                     if window not in currentWindows:
 
-                        if win32gui.GetClassName(window) not in self.ignoreList:
+                        if win32gui.GetClassName(window) not in self.floatList:
 
                             currentWindows.append(window)
                             reTile = True

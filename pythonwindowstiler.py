@@ -46,10 +46,9 @@ def handler_alt_shift_V():
 def handler_alt_shift_Q():
     "Handles alt+shift+Q, quits the application"
 
-    #unregister hotkeys and exit app
-    hotkeypoll.unregister_hotkeys()
-
-    os._exit(0)
+    #stop the polls
+    hotkeypoll.stop = True
+    windowpoll.stop = True
 
 if __name__ == "__main__":
 
@@ -105,7 +104,3 @@ if __name__ == "__main__":
     #start the threads
     w.start()
     h.start()
-
-    #wait for the threads 
-    w.join()
-    h.join()

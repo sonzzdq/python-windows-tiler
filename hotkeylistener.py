@@ -10,8 +10,9 @@ class HotkeyListener:
 
     def __init__(self, hotkeys, hotkeyhandlers):
 
-        self.hotkeys = hotkeys;
+        self.hotkeys = hotkeys
         self.hotkeyhandlers = hotkeyhandlers
+        self.stop = False 
 
     def register_hotkeys(self):
         "Registers the hotkeys that are created on initialization"
@@ -50,12 +51,12 @@ class HotkeyListener:
             msg = wintypes.MSG()
 
             #wait for a message
-            while user32.GetMessageA(byref(msg), None, 0, 0) != 0:
+            while not self.stop and user32.GetMessageA(byref(msg), None, 0, 0) != 0:
 
                 #check if message is a hotkey and if we have it registered
                 if msg.message == WM_HOTKEY and msg.wParam in self.hotkeyhandlers.keys():
 
-                    #execute the hotkey handler in a different thread (smooth actions when hotkey is rapidly pressed)
+                    #execute the hotkey handler
                     self.hotkeyhandlers.get(msg.wParam)()
 
                 #user32.TranslateMessage(byref(msg))
