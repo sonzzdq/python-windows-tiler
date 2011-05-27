@@ -54,13 +54,15 @@ class HotkeyListener:
             while not self.stop and user32.GetMessageA(byref(msg), None, 0, 0) != 0:
 
                 #check if message is a hotkey and if we have it registered
-                if msg.message == WM_HOTKEY and msg.wParam in self.hotkeyhandlers.keys():
+                if msg.message == WM_HOTKEY:
+                    if msg.wParam in self.hotkeyhandlers.keys():
 
-                    #execute the hotkey handler
-                    self.hotkeyhandlers.get(msg.wParam)()
+                        #execute the hotkey handler
+                        self.hotkeyhandlers.get(msg.wParam)()
 
-                #user32.TranslateMessage(byref(msg))
-                #user32.DispatchMessageA(byref(msg))
+                user32.TranslateMessage(byref(msg))
+                user32.DispatchMessageA(byref(msg))
+
         finally:
 
             #unregister the hotkeys

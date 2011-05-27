@@ -96,8 +96,8 @@ if __name__ == "__main__":
 
     hotkeypoll = hotkeylistener.HotkeyListener(hotkeys, hotkeyhandlers)
 
+    #thread the hotkeylistener
     h = threading.Thread(name="Hotkeylistener", target=hotkeypoll.listen_to_hotkeys)
-
     h.start()
 
     windowpoll.listen_to_windows(tilehandler.tile_windows)
