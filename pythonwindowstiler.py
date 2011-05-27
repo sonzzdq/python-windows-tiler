@@ -96,11 +96,8 @@ if __name__ == "__main__":
 
     hotkeypoll = hotkeylistener.HotkeyListener(hotkeys, hotkeyhandlers)
 
-    #start a thread to listen to windows passing the tile_windows command 
-    #tile_windows() will be launched when a new window is caught
-    w = threading.Thread(name="Windowlistener", target=windowpoll.listen_to_windows, args=(tilehandler.tile_windows,))
     h = threading.Thread(name="Hotkeylistener", target=hotkeypoll.listen_to_hotkeys)
 
-    #start the threads
-    w.start()
     h.start()
+
+    windowpoll.listen_to_windows(tilehandler.tile_windows)
