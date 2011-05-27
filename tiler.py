@@ -65,3 +65,151 @@ class Tiler:
         elif len(self.windows) > 0:
 
             windowutilities.tile(self.windows[0], (0, 0, self.width, self.height))
+
+
+    def decrease_masterarea_width(self):
+        "Decreases the masterarea width by 100px"
+
+        #decrease master areaWidth 
+        self.masterareaWidth -= 100
+        print("master area -= 100")
+
+        self.tile_windows()
+
+    def increase_masterarea_width(self):
+        "Increases the masterarea width by 100px"
+
+        #increase master areaWidth 
+        self.masterareaWidth += 100
+        print("master area += 100")
+
+        self.tile_windows()
+
+    def set_focus_down(self):
+        "Sets focus on the next window"
+
+        #get focused window
+        window = windowutilities.get_focused_window()
+
+        #only grab and move the focus if it is in the self
+        if window in self.windows:
+
+            i = self.windows.index(window) + 1
+
+            #if the index after the foreground's is out of range, assign 0
+            if i >= len(self.windows):
+
+                i = 0
+
+            #focus window and cursor
+            windowutilities.focus(self.windows[i])
+            windowutilities.set_cursor_window(self.windows[i])
+
+    def set_focus_up(self):
+        "Sets focus on the previous window"
+
+        #get focused window
+        window = windowutilities.get_focused_window()
+
+        #only grab and move the focus if it is in the self
+        if window in self.windows:
+
+            i = self.windows.index(window) - 1
+
+            #if the index before the foreground's is out of range, assign last index
+            if i < 0:
+
+                i = len(self.windows) - 1
+
+            #focus window and cursor
+            windowutilities.focus(self.windows[i])
+            windowutilities.set_cursor_window(self.windows[i])
+
+    def move_focusedwindow_down(self):
+        "Switches the window to the next position"
+        
+        #get focused window
+        window = windowutilities.get_focused_window()
+
+        #only grab and move the window if it is in the self
+        if window in self.windows:
+
+            i = self.windows.index(windowutilities.get_focused_window())
+
+            #if the foreground window is the last window, shift everything and place it first
+            if i == len(self.windows) - 1:
+
+                self.windows[0], self.windows[1:] = self.windows[i], self.windows[:i]
+
+            #else shift it with the following window
+            else:
+
+                self.windows[i], self.windows[i + 1] = self.windows[i + 1], self.windows[i]
+
+            print ("change order down")
+            self.tile_windows()
+
+    def move_focusedwindow_up(self):
+        "Switches the window to the previous position"
+
+        window = windowutilities.get_focused_window()
+
+        #only grab and move the window if it is in the self
+        if window in self.windows:
+
+            i = self.windows.index(windowutilities.get_focused_window())
+
+            #if the foreground window is first, shift everything and place it last
+            if i == 0:
+
+                j = len(self.windows) - 1
+                self.windows[j], self.windows[:j] = self.windows[0], self.windows[1:]
+
+            #else shift it with the trailing window
+            else:
+
+                j = i - 1
+                self.windows[i], self.windows[j] = self.windows[j], self.windows[i]
+
+            print ("change order up")
+            self.tile_windows()
+
+    def move_focusedwindow_to_masterarea(self):
+        "Moves the focused window to the first place in the masterarea"
+
+        window = windowutilities.get_focused_window()
+
+        #only move the focused window if it is in the tiler
+        if window in self.windows:
+
+            i = self.windows.index(window)
+
+            windowrest = self.windows[:i]
+            windowrest.extend(self.windows[i+1:])
+
+            #shift window location
+            self.windows[0], self.windows[1:] = self.windows[i], windowrest 
+            self.tile_windows()
+ 
+    def decrease_masterarea_size(self):
+        "Decreases the masterarea size by one"
+
+        #decrease the masterarea size if it's possible
+        if self.masterareaSize > 1:
+
+            self.masterareaSize -= 1
+
+            print ("masterarea size -= 1")
+            self.tile_windows()
+
+    def increase_masterarea_size(self):
+        "Decreases the masterarea size by one"
+
+        #increase the masterarea size if it's possible
+        if self.masterareaSize < len(self.windows):
+
+            self.masterareaSize += 1
+
+            print ("masterarea size += 1")
+            self.tile_windows()
+   

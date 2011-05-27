@@ -52,8 +52,6 @@ class WindowListener:
 
             win32gui.EnumWindows(self.callback, windows)
 
-            print("start check ", len(windows), self.oldAmount)
-
             if len(windows) > self.oldAmount:
 
                 for window in windows:

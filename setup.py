@@ -5,13 +5,13 @@ exe = Executable(
 		,base = "Win32GUI"
         ,targetName = "PWT.exe"
         ,compress = True
-        ,icon = "PWT.ico"
+        ,icon = "icons/PWT.ico"
 		)
 
 setup( 
 	name = "PWT"
 	,version = "0.2"
-	,description = "Python Windows Tiler V0.2"
+	,description = "Python Windows Tiler"
     ,author='Bob Reynders'
 	,executables = [exe]
 	)
