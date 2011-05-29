@@ -14,6 +14,9 @@ class WindowListener:
 
         self.floatList = floatList
         self.stop = False
+        self.oldAmount = 0
+        self.currentWindows = []
+        self.oldTiledwindows = []
 
     def callback (self, window, resultList):
         "Callback function for EnumWindows"
@@ -82,4 +85,43 @@ class WindowListener:
                 event(currentWindows)
                 self.oldAmount = len(windows)
                 oldTiledWindows = set(currentWindows)
+
+    def handle_window_event(self, event):
+        "Enumerateswindows, when the amount of windows changes it calls the event, passing the current windows"
+
+        self.windows = []
+        callEvent = False
+
+        #enumerate all self.windows
+        win32gui.EnumWindows(self.callback, self.windows)
+
+        #check for window changement
+        if len(self.windows) > self.oldAmount:
+
+            for window in self.windows:
+
+                if window not in self.currentWindows:
+
+                    if win32gui.GetClassName(window) not in self.floatList:
+
+                        self.currentWindows.append(window)
+                        callEvent = True
+                        print ("Add handle: ", window, win32gui.GetClassName(window))
+
+        elif self.oldAmount > len(self.windows):
+
+            for window in (oldTiledWindows - set(self.windows)):
+
+                if window in self.currentWindows:
+
+                    self.currentWindows.remove(window)
+                    callEvent = True
+                    print ("Remove handle: ", window)
+
+        if callEvent:
+
+            #call the event
+            event(self.currentWindows)
+            self.oldAmount = len(self.windows)
+            oldTiledWindows = set(self.currentWindows)
 
