@@ -10,9 +10,9 @@ exe = Executable(
 
 setup( 
 	name = "PWT"
-	,version = "0.3"
+	,version = "0.4"
 	,description = "Python Windows Tiler"
-    ,author='Bob Reynders'
+    ,author="Bob Reynders"
 	,executables = [exe]
 	)
 

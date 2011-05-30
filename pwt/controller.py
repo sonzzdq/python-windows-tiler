@@ -46,7 +46,16 @@ class Controller(object):
                 , 19: (MOD_ALT, ord("7"))
                 , 20: (MOD_ALT, ord("8"))
                 , 21: (MOD_ALT, ord("9"))
-                , 22: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 22: (MOD_ALT + MOD_SHIFT, ord("1"))
+                , 23: (MOD_ALT + MOD_SHIFT, ord("2"))
+                , 24: (MOD_ALT + MOD_SHIFT, ord("3"))
+                , 25: (MOD_ALT + MOD_SHIFT, ord("4"))
+                , 26: (MOD_ALT + MOD_SHIFT, ord("5"))
+                , 27: (MOD_ALT + MOD_SHIFT, ord("6"))
+                , 28: (MOD_ALT + MOD_SHIFT, ord("7"))
+                , 29: (MOD_ALT + MOD_SHIFT, ord("8"))
+                , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
+                , 31: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
@@ -71,7 +80,16 @@ class Controller(object):
                 , 19:  self.handler_alt_seven
                 , 20:  self.handler_alt_eight
                 , 21:  self.handler_alt_nine
-                , 22:  self.handler_alt_shift_Q
+                , 22:  self.handler_alt_shift_one
+                , 23:  self.handler_alt_shift_two
+                , 24:  self.handler_alt_shift_three
+                , 25:  self.handler_alt_shift_four
+                , 26:  self.handler_alt_shift_five
+                , 27:  self.handler_alt_shift_six
+                , 28:  self.handler_alt_shift_seven
+                , 29:  self.handler_alt_shift_eight
+                , 30:  self.handler_alt_shift_nine
+                , 31:  self.handler_alt_shift_Q
                 }
 
         self.stop = False
@@ -86,6 +104,15 @@ class Controller(object):
             self.tilers.append(Tiler())
 
         self.systrayicon = SysTrayIcon(self.icon(), "PWT", "PWT")
+
+    def icon(self):
+        "Return the appropriate icon"
+
+        return self.ICONFOLDER + str(self.currentTiler + 1) + ".ico"
+
+    ###
+    #Commands
+    ###
 
     def start(self):
         "start the listeners with a safety try/finally to unregister keys"
@@ -110,13 +137,16 @@ class Controller(object):
 
             self.hotkeylistener.unregister_hotkeys()
 
+
     def switch_tiler(self, i):
         "Switch the current tiler into tiler i"
 
+        #Minize all windows that aren't in the next tiler
         for window in (set(self.tilers[self.currentTiler].windows) - set(self.tilers[i].windows)):
 
             pwt.windowutilities.minimize(window)
 
+        #Show all windows that weren't in the previous tiler
         for window in (set(self.tilers[i].windows) - set(self.tilers[self.currentTiler].windows)):
 
             pwt.windowutilities.show(window)
@@ -126,12 +156,21 @@ class Controller(object):
         self.systrayicon.refresh_icon(self.icon())
         self.windowlistener.reload_windows(self.tilers[self.currentTiler].windows)
 
-    def icon(self):
+    def send_window_to_tiler(self, window, i):
 
-        return self.ICONFOLDER + str(self.currentTiler + 1) + ".ico"
+        if window in self.tilers[self.currentTiler].windows:
+
+            self.tilers[self.currentTiler].windows.remove(window)
+            pwt.windowutilities.minimize(window)
+
+        self.tilers[self.currentTiler].tile_windows()
+
+        if window not in self.tilers[i].windows:
+
+            self.tilers[i].windows.append(window)
 
     ###
-    #Command wrappers
+    #Hotkey handlers
     ###
 
     def handler_alt_H(self):
@@ -258,6 +297,93 @@ class Controller(object):
         if self.currentTiler != 8:
             self.switch_tiler(8)
 
+    def handler_alt_shift_one(self):
+        "Handles alt+shift+1, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 0)
+
+
+    def handler_alt_shift_two(self):
+        "Handles alt+shift+2, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 1)
+
+    def handler_alt_shift_three(self):
+        "Handles alt+shift+3, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 2)
+
+
+    def handler_alt_shift_four(self):
+        "Handles alt+shift+4, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 3)
+
+
+    def handler_alt_shift_five(self):
+        "Handles alt+shift+5, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 4)
+
+
+    def handler_alt_shift_six(self):
+        "Handles alt+shift+6, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 5)
+
+
+    def handler_alt_shift_seven(self):
+        "Handles alt+shift+7, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 6)
+
+
+    def handler_alt_shift_eight(self):
+        "Handles alt+shift+8, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 7)
+
+
+    def handler_alt_shift_nine(self):
+        "Handles alt+shift+9, sends window to appropriate tiler"
+
+        window = pwt.windowutilities.get_focused_window() 
+
+        if window:
+
+            self.send_window_to_tiler(window, 8)
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"

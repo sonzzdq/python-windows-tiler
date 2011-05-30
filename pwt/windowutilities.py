@@ -2,6 +2,7 @@ import win32api
 import win32gui
 
 from win32con import SW_FORCEMINIMIZE
+from win32con import SW_MINIMIZE
 from win32con import SW_SHOWNORMAL
 from win32con import WM_CLOSE
 
@@ -29,7 +30,7 @@ def show(window):
 def minimize(window):
     "Minimizes the given window"
 
-    win32gui.ShowWindow(window, SW_FORCEMINIMIZE)
+    win32gui.ShowWindow(window, SW_MINIMIZE)
 
 def close(window):
     "Closes the given window"
