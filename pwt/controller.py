@@ -129,6 +129,7 @@ class Controller(object):
     def icon(self):
 
         return self.ICONFOLDER + str(self.currentTiler + 1) + ".ico"
+
     ###
     #Command wrappers
     ###
