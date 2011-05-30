@@ -1,5 +1,5 @@
 import ctypes
-import windowutilities
+import pwt.windowutilities
 
 from win32con import SPI_GETWORKAREA
 
