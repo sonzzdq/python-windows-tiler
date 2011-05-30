@@ -110,11 +110,11 @@ class Controller(object):
 
         for window in (set(self.tilers[self.currentTiler].windows) - set(self.tilers[i].windows)):
 
-            windowutilities.minimize(window)
+            pwt.windowutilities.minimize(window)
 
         for window in (set(self.tilers[i].windows) - set(self.tilers[self.currentTiler].windows)):
 
-            windowutilities.show(window)
+            pwt.windowutilities.show(window)
 
         self.tilers[i].tile_windows()
         self.currentTiler = i
@@ -177,16 +177,16 @@ class Controller(object):
     def handler_alt_shift_C(self):
         "Handles alt+shift+C, closes the current window"
 
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
-        windowutilities.close(window)
+        pwt.windowutilities.close(window)
 
     def handler_alt_shift_V(self):
         "Handles alt+shift+V, minimizes the current window"
 
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
-        windowutilities.minimize(window)
+        pwt.windowutilities.minimize(window)
 
     def handler_alt_one(self):
         "Handles alt+1, switches tiler"

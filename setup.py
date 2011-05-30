@@ -1,7 +1,7 @@
 from cx_Freeze import setup, Executable
 
 exe = Executable(
-		script = "pythonwindowstiler.py"
+		script = "pwt.py"
 		,base = "Win32GUI"
         ,targetName = "PWT.exe"
         ,compress = True
@@ -10,7 +10,7 @@ exe = Executable(
 
 setup( 
 	name = "PWT"
-	,version = "0.2"
+	,version = "0.3"
 	,description = "Python Windows Tiler"
     ,author='Bob Reynders'
 	,executables = [exe]

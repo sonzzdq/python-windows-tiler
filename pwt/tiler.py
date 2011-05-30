@@ -63,11 +63,11 @@ class Tiler(object):
 
                     rectangleCoordinates = (width, (i - self.masterareaSize) * height, self.width, (i - self.masterareaSize + 1) * height)
 
-                windowutilities.tile(window, rectangleCoordinates)
+                pwt.windowutilities.tile(window, rectangleCoordinates)
 
         elif len(self.windows) > 0:
 
-            windowutilities.tile(self.windows[0], (0, 0, self.width, self.height))
+            pwt.windowutilities.tile(self.windows[0], (0, 0, self.width, self.height))
 
     ############################################
     ### Start of the commands
@@ -99,7 +99,7 @@ class Tiler(object):
         "Sets focus on the next window"
 
         #get focused window
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -112,8 +112,8 @@ class Tiler(object):
                 i = 0
 
             #focus window and cursor
-            windowutilities.focus(self.windows[i])
-            windowutilities.set_cursor_window(self.windows[i])
+            pwt.windowutilities.focus(self.windows[i])
+            pwt.windowutilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -123,7 +123,7 @@ class Tiler(object):
         "Sets focus on the previous window"
 
         #get focused window
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -136,8 +136,8 @@ class Tiler(object):
                 i = len(self.windows) - 1
 
             #focus window and cursor
-            windowutilities.focus(self.windows[i])
-            windowutilities.set_cursor_window(self.windows[i])
+            pwt.windowutilities.focus(self.windows[i])
+            pwt.windowutilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -148,19 +148,19 @@ class Tiler(object):
 
         if len(self.windows):
 
-            windowutilities.focus(self.windows[0])
-            windowutilities.set_cursor_window(self.windows[0])
+            pwt.windowutilities.focus(self.windows[0])
+            pwt.windowutilities.set_cursor_window(self.windows[0])
 
     def move_focusedwindow_down(self):
         "Switches the window to the next position"
         
         #get focused window
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(windowutilities.get_focused_window())
+            i = self.windows.index(pwt.windowutilities.get_focused_window())
 
             #if the foreground window is the last window, shift everything and place it first
             if i == len(self.windows) - 1:
@@ -178,12 +178,12 @@ class Tiler(object):
     def move_focusedwindow_up(self):
         "Switches the window to the previous position"
 
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(windowutilities.get_focused_window())
+            i = self.windows.index(pwt.windowutilities.get_focused_window())
 
             #if the foreground window is first, shift everything and place it last
             if i == 0:
@@ -203,7 +203,7 @@ class Tiler(object):
     def move_focusedwindow_to_masterarea(self):
         "Moves the focused window to the first place in the masterarea"
 
-        window = windowutilities.get_focused_window()
+        window = pwt.windowutilities.get_focused_window()
 
         #only move the focused window if it is in the tiler
         if window in self.windows:
