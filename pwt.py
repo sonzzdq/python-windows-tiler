@@ -1,10 +1,17 @@
 from pwt.controller import Controller
+from singleinstance import singleinstance
+import sys
 
 if __name__ == "__main__":
 
-    #initialization
+    #way to assure a singleinstance
+    this = singleinstance()
 
-    controller = Controller()
+    if not this.alreadyrunning():
 
-    controller.start()
+        #initialization
+
+        controller = Controller()
+
+        controller.start()
 
