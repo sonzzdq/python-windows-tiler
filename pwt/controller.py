@@ -93,13 +93,15 @@ class Controller(object):
                 }
 
         self.stop = False
+
+        #Create the listeners
         self.hotkeylistener = HotkeyListener(HOTKEYS, HOTKEYHANDLERS)
         self.windowlistener = WindowListener(FLOATS)
 
+        #Create 9 tilers
         self.tilers = []
         self.currentTiler = 0
         
-        #Create 9 tilers
         for i in range(9):
 
             self.tilers.append(Tiler())
@@ -128,10 +130,10 @@ class Controller(object):
 
             while not self.stop:
 
-                "Sleep for 0.05 to save resources"
+                #Sleep for 0.05 to save resources
                 time.sleep(0.05)
 
-                "Use the listeners"
+                #Use the listeners
                 self.windowlistener.listen_to_windows(self.tilers[self.currentTiler].tile_windows)
                 self.hotkeylistener.listen_to_keys()
 
@@ -139,7 +141,10 @@ class Controller(object):
 
             print("stop")
 
+            #Unregister hotkeys
             self.hotkeylistener.unregister_hotkeys()
+
+            #Remove systrayicon
             self.systrayicon.destroy()
 
 
@@ -156,20 +161,26 @@ class Controller(object):
 
             pwt.windowutilities.show(window)
 
+        #Tile the windows from the target tiler and reload the appropriate settings
         self.tilers[i].tile_windows()
         self.currentTiler = i
         self.systrayicon.refresh_icon(self.icon())
         self.windowlistener.reload_windows(self.tilers[self.currentTiler].windows)
 
     def send_window_to_tiler(self, window, i):
+        "Sends window to tiler i"
 
+        #Minimize the window
+        pwt.windowutilities.minimize(window)
+
+        #Remove the window if it's in the tiler
+        #Retile the windows if any changes have been made
         if window in self.tilers[self.currentTiler].windows:
 
             self.tilers[self.currentTiler].windows.remove(window)
-            pwt.windowutilities.minimize(window)
+            self.tilers[self.currentTiler].tile_windows()
 
-        self.tilers[self.currentTiler].tile_windows()
-
+        #Add window if it's not already in the target tiler
         if window not in self.tilers[i].windows:
 
             self.tilers[i].windows.append(window)
