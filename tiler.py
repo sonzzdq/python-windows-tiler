@@ -3,7 +3,8 @@ import windowutilities
 
 from win32con import SPI_GETWORKAREA
 
-class Tiler:
+import time
+class Tiler(object):
 
     def __init__(self):
 
@@ -22,6 +23,8 @@ class Tiler:
 
         self.masterareaWidth = self.width // 2
         self.masterareaSize = 1
+
+        self.windows = []
 
     def tile_windows(self, windows=None):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
@@ -66,6 +69,9 @@ class Tiler:
 
             windowutilities.tile(self.windows[0], (0, 0, self.width, self.height))
 
+    ############################################
+    ### Start of the commands
+    ############################################
 
     def decrease_masterarea_width(self):
         "Decreases the masterarea width by 100px"
@@ -109,6 +115,10 @@ class Tiler:
             windowutilities.focus(self.windows[i])
             windowutilities.set_cursor_window(self.windows[i])
 
+        else:
+
+            self.set_focus_to_masterarea()
+
     def set_focus_up(self):
         "Sets focus on the previous window"
 
@@ -128,6 +138,18 @@ class Tiler:
             #focus window and cursor
             windowutilities.focus(self.windows[i])
             windowutilities.set_cursor_window(self.windows[i])
+
+        else:
+
+            self.set_focus_to_masterarea()
+
+    def set_focus_to_masterarea(self):
+        "Sets focus on the masterarea"
+
+        if len(self.windows):
+
+            windowutilities.focus(self.windows[0])
+            windowutilities.set_cursor_window(self.windows[0])
 
     def move_focusedwindow_down(self):
         "Switches the window to the next position"

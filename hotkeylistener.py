@@ -9,7 +9,7 @@ from win32con import PM_REMOVE
 byref = ctypes.byref
 user32 = ctypes.windll.user32
 
-class HotkeyListener:
+class HotkeyListener(object):
 
     def __init__(self, hotkeys, hotkeyhandlers):
 
@@ -41,39 +41,7 @@ class HotkeyListener:
             print ("Unregistering key: ", modifiers, vk)
             user32.UnregisterHotKey (None, i)
 
-    def listen_to_hotkeys(self):
-        "Listens to the hotkeys that are created on initialization"
-
-        #register the hotkeys
-        self.register_hotkeys()
-
-        try:
-
-            #define msg
-            msg = wintypes.MSG()
-
-            #wait for a message
-            while not self.stop:
-
-                time.sleep(0.1)
-
-                if user32.PeekMessageA(byref(msg), None, WM_HOTKEY, WM_HOTKEY, PM_REMOVE):
-
-                    #check if message is a hotkey and if we have it registered
-                    if msg.wParam in self.hotkeyhandlers.keys():
-
-                        #execute the hotkey handler
-                        self.hotkeyhandlers.get(msg.wParam)()
-
-                    user32.TranslateMessage(byref(msg))
-                    user32.DispatchMessageA(byref(msg))
-
-        finally:
-
-            #unregister the hotkeys
-            self.unregister_hotkeys()
-
-    def handle_keypress(self):
+    def listen_to_keys(self):
         "Listens to the hotkeys that are created on initialization"
 
         #define msg

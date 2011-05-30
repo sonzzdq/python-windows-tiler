@@ -1,5 +1,5 @@
-import win32gui
 import time
+import win32gui
 
 from win32con import GW_OWNER
 from win32con import GWL_STYLE
@@ -8,7 +8,7 @@ from win32con import WS_EX_APPWINDOW
 from win32con import WS_EX_CONTROLPARENT
 from win32con import SW_SHOWNORMAL
 
-class WindowListener:
+class WindowListener(object):
 
     def __init__(self, floatList):
 
@@ -37,60 +37,11 @@ class WindowListener:
                             resultList.append(window)
                             return True
 
-    def listen_to_windows(self, event):
-        "Listens to windows, when the amount of windows changes it calls the event, passing the current windows"
+    def listen_to_windows(self, handler):
+        "Enumerateswindows, when the amount of windows changes it calls the handler, passing the current windows"
 
-        windows = []
-        currentWindows = []
-        self.oldAmount = 0
-
-        print ("start loop")
-
-        while not self.stop:
-
-            time.sleep(0.1)
-
-            windows = []
-            callEvent = False
-
-            #enumerate all windows
-            win32gui.EnumWindows(self.callback, windows)
-
-            #check for window changement
-            if len(windows) > self.oldAmount:
-
-                for window in windows:
-
-                    if window not in currentWindows:
-
-                        if win32gui.GetClassName(window) not in self.floatList:
-
-                            currentWindows.append(window)
-                            callEvent = True
-                            print ("Add handle: ", window, win32gui.GetClassName(window))
-
-            elif self.oldAmount > len(windows):
-
-                for window in (oldTiledWindows - set(windows)):
-
-                    if window in currentWindows:
-
-                        currentWindows.remove(window)
-                        callEvent = True
-                        print ("Remove handle: ", window)
-
-            if callEvent:
-
-                #call the event
-                event(currentWindows)
-                self.oldAmount = len(windows)
-                oldTiledWindows = set(currentWindows)
-
-    def handle_window_event(self, event):
-        "Enumerateswindows, when the amount of windows changes it calls the event, passing the current windows"
-
+        callHandler = False
         self.windows = []
-        callEvent = False
 
         #enumerate all self.windows
         win32gui.EnumWindows(self.callback, self.windows)
@@ -105,23 +56,28 @@ class WindowListener:
                     if win32gui.GetClassName(window) not in self.floatList:
 
                         self.currentWindows.append(window)
-                        callEvent = True
+                        callHandler = True
                         print ("Add handle: ", window, win32gui.GetClassName(window))
 
         elif self.oldAmount > len(self.windows):
 
-            for window in (oldTiledWindows - set(self.windows)):
+            for window in (self.oldTiledWindows - set(self.windows)):
 
                 if window in self.currentWindows:
 
                     self.currentWindows.remove(window)
-                    callEvent = True
+                    callHandler = True
                     print ("Remove handle: ", window)
 
-        if callEvent:
+        if callHandler:
 
-            #call the event
-            event(self.currentWindows)
+            #call the handler
+            handler(self.currentWindows)
             self.oldAmount = len(self.windows)
-            oldTiledWindows = set(self.currentWindows)
+            self.oldTiledWindows = set(self.currentWindows)
 
+    def reload_windows(self, currentWindows):
+
+        self.currentWindows = currentWindows
+        self.oldTiledWindows = set(currentWindows)
+        self.oldAmount = len(self.currentWindows)

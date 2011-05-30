@@ -2,6 +2,7 @@ import win32api
 import win32gui
 
 from win32con import SW_FORCEMINIMIZE
+from win32con import SW_SHOWNORMAL
 from win32con import WM_CLOSE
 
 def tile(window, rectangleCoordinates):
@@ -15,9 +16,15 @@ def tile(window, rectangleCoordinates):
             , windowPlacement[2]
             , windowPlacement[3]
             , rectangleCoordinates))
+
     except win32gui.error:
 
         print("Error while placing window: ", window)
+
+def show(window):
+    "Shows the given window"
+
+    win32gui.ShowWindow(window, SW_SHOWNORMAL)
 
 def minimize(window):
     "Minimizes the given window"

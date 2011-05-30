@@ -13,8 +13,6 @@ from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
 
-stop = False
-
 def handler_alt_shift_C():
     "Handles alt+shift+C, closes the current window"
 
@@ -48,7 +46,7 @@ def handler_alt_shift_V():
 def handler_alt_shift_Q():
     "Handles alt+shift+Q, quits the application"
 
-    #stop the polls
+    #stop the polling
     listener.stop = True
 
 if __name__ == "__main__":
@@ -56,6 +54,7 @@ if __name__ == "__main__":
     #initialization
 
     tiler = Tiler()
+
 
     #create <<classname>> based ignorelist
     floats = (#This list may hurt performance if it's huge
@@ -68,14 +67,15 @@ if __name__ == "__main__":
             , 2: (MOD_ALT, ord("L"))
             , 3: (MOD_ALT, ord("J"))
             , 4: (MOD_ALT, ord("K"))
-            , 5: (MOD_ALT + MOD_SHIFT, ord("J"))
-            , 6: (MOD_ALT + MOD_SHIFT, ord("K"))
-            , 7: (MOD_ALT + MOD_SHIFT, VK_RETURN)
-            , 8: (MOD_ALT + MOD_SHIFT, ord("L"))
-            , 9: (MOD_ALT + MOD_SHIFT, ord("H"))
-            , 10: (MOD_ALT + MOD_SHIFT, ord("C"))
-            , 11: (MOD_ALT + MOD_SHIFT, ord("V"))
-            , 12: (MOD_ALT + MOD_SHIFT, ord("Q"))
+            , 5: (MOD_ALT, VK_RETURN)
+            , 6: (MOD_ALT + MOD_SHIFT, ord("J"))
+            , 7: (MOD_ALT + MOD_SHIFT, ord("K"))
+            , 8: (MOD_ALT + MOD_SHIFT, VK_RETURN)
+            , 9: (MOD_ALT + MOD_SHIFT, ord("L"))
+            , 10: (MOD_ALT + MOD_SHIFT, ord("H"))
+            , 11: (MOD_ALT + MOD_SHIFT, ord("C"))
+            , 12: (MOD_ALT + MOD_SHIFT, ord("V"))
+            , 13: (MOD_ALT + MOD_SHIFT, ord("Q"))
             }
 
     #list the corresponding handlers 
@@ -83,14 +83,15 @@ if __name__ == "__main__":
             , 2:  tiler.increase_masterarea_width
             , 3:  tiler.set_focus_down
             , 4:  tiler.set_focus_up
-            , 5:  tiler.move_focusedwindow_down
-            , 6:  tiler.move_focusedwindow_up
-            , 7:  tiler.move_focusedwindow_to_masterarea
-            , 8:  tiler.decrease_masterarea_size
-            , 9:  tiler.increase_masterarea_size
-            , 10:  handler_alt_shift_C
-            , 11:  handler_alt_shift_V
-            , 12:  handler_alt_shift_Q
+            , 5:  tiler.set_focus_to_masterarea
+            , 6:  tiler.move_focusedwindow_down
+            , 7:  tiler.move_focusedwindow_up
+            , 8:  tiler.move_focusedwindow_to_masterarea
+            , 9:  tiler.decrease_masterarea_size
+            , 10:  tiler.increase_masterarea_size
+            , 11:  handler_alt_shift_C
+            , 12:  handler_alt_shift_V
+            , 13:  handler_alt_shift_Q
             }
 
     listener = Listener(hotkeys, hotkeyhandlers, floats, tiler.tile_windows)
