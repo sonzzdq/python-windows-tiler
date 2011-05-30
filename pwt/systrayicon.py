@@ -24,7 +24,6 @@ class SysTrayIcon(object):
         
         self.icon = icon
         self.hover_text = hover_text
-
         self.window_class_name = window_class_name
         
         # Register the Window class.
@@ -55,7 +54,11 @@ class SysTrayIcon(object):
         self.notify_id = None
         self.refresh_icon()
        
-    def refresh_icon(self):
+    def refresh_icon(self, icon=None):
+
+        if icon:
+            
+            self.icon = icon
 
         # Try and find a custom icon
         hinst = win32gui.GetModuleHandle(None)

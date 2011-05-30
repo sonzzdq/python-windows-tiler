@@ -3,6 +3,7 @@ from pwt.windowlistener import WindowListener
 from pwt.tiler import Tiler
 from pwt.systrayicon import SysTrayIcon
 
+import glob
 import time
 import pwt.windowutilities
 
@@ -16,8 +17,9 @@ class Controller(object):
     def __init__(self):
         "create the hotkey and window listeners on initialization"
 
+        self.ICONFOLDER = "icons/"
         #create <<classname>> based ignorelist
-        floats = (#This list may hurt performance if it's huge
+        FLOATS = (#This list may hurt performance if it's huge
                 #"progman"			#example
                 #, "progman"		#example
                 )
@@ -74,7 +76,7 @@ class Controller(object):
 
         self.stop = False
         self.hotkeylistener = HotkeyListener(HOTKEYS, HOTKEYHANDLERS)
-        self.windowlistener = WindowListener(floats)
+        self.windowlistener = WindowListener(FLOATS)
 
         self.tilers = []
         self.currentTiler = 0
@@ -83,8 +85,7 @@ class Controller(object):
 
             self.tilers.append(Tiler())
 
-        icon = "../icons/PWT.ico"
-        self.systrayicon = SysTrayIcon(icon, "PWT", "PWT")
+        self.systrayicon = SysTrayIcon(self.icon(), "PWT", "PWT")
 
     def start(self):
         "start the listeners with a safety try/finally to unregister keys"
@@ -122,8 +123,12 @@ class Controller(object):
 
         self.tilers[i].tile_windows()
         self.currentTiler = i
+        self.systrayicon.refresh_icon(self.icon())
         self.windowlistener.reload_windows(self.tilers[self.currentTiler].windows)
 
+    def icon(self):
+
+        return self.ICONFOLDER + str(self.currentTiler + 1) + ".ico"
     ###
     #Command wrappers
     ###
