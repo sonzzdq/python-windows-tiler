@@ -1,6 +1,7 @@
 from pwt.hotkeylistener import HotkeyListener
 from pwt.windowlistener import WindowListener
 from pwt.tiler import Tiler
+from pwt.systrayicon import SysTrayIcon
 
 import time
 import pwt.windowutilities
@@ -21,8 +22,8 @@ class Controller(object):
                 #, "progman"		#example
                 )
 
-        #list the hotkeys that should be listened to
-        hotkeys = {1: (MOD_ALT, ord("H"))
+        #list the HOTKEYS that should be listened to
+        HOTKEYS = {1: (MOD_ALT, ord("H"))
                 , 2: (MOD_ALT, ord("L"))
                 , 3: (MOD_ALT, ord("J"))
                 , 4: (MOD_ALT, ord("K"))
@@ -47,7 +48,7 @@ class Controller(object):
                 }
 
         #list the corresponding self.handlers 
-        hotkeyhandlers = {1: self.handler_alt_H
+        HOTKEYHANDLERS = {1: self.handler_alt_H
                 , 2:  self.handler_alt_L
                 , 3:  self.handler_alt_J
                 , 4:  self.handler_alt_K
@@ -72,7 +73,7 @@ class Controller(object):
                 }
 
         self.stop = False
-        self.hotkeylistener = HotkeyListener(hotkeys, hotkeyhandlers)
+        self.hotkeylistener = HotkeyListener(HOTKEYS, HOTKEYHANDLERS)
         self.windowlistener = WindowListener(floats)
 
         self.tilers = []
@@ -81,6 +82,9 @@ class Controller(object):
         for i in range(9):
 
             self.tilers.append(Tiler())
+
+        icon = "../icons/PWT.ico"
+        self.systrayicon = SysTrayIcon(icon, "PWT", "PWT")
 
     def start(self):
         "start the listeners with a safety try/finally to unregister keys"
@@ -252,6 +256,8 @@ class Controller(object):
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"
 
+        self.systrayicon.destroy()
+        
         #stop the polling
         self.stop = True
 
