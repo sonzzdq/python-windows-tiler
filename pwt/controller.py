@@ -99,11 +99,10 @@ class Controller(object):
         self.tilers = []
         self.currentTiler = 0
         
+        #Create 9 tilers
         for i in range(9):
 
             self.tilers.append(Tiler())
-
-        self.systrayicon = SysTrayIcon(self.icon(), "PWT", "PWT")
 
     def icon(self):
         "Return the appropriate icon"
@@ -115,10 +114,15 @@ class Controller(object):
     ###
 
     def start(self):
-        "start the listeners with a safety try/finally to unregister keys"
+        "start the listeners with a safety try/finally to unregister keys and kill the icon"
 
         print("start")
+
+        #Register hotkeys
         self.hotkeylistener.register_hotkeys()
+
+        #Create systrayicon
+        self.systrayicon = SysTrayIcon(self.icon(), "PWT", "PWT")
 
         try:
 
@@ -136,6 +140,7 @@ class Controller(object):
             print("stop")
 
             self.hotkeylistener.unregister_hotkeys()
+            self.systrayicon.destroy()
 
 
     def switch_tiler(self, i):
@@ -387,8 +392,6 @@ class Controller(object):
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"
-
-        self.systrayicon.destroy()
         
         #stop the polling
         self.stop = True
