@@ -125,6 +125,11 @@ class Controller(object):
 
         return self.monitorTilers[pwt.utilities.current_monitor()][self.currentWorkspace]
 
+    def current_tilers(self):
+        "Return current tilers"
+
+        return self.monitorTilers[pwt.utilities.current_monitor()]
+
     ###
     #Commands
     ###
@@ -205,20 +210,15 @@ class Controller(object):
     def send_window_to_tiler(self, window, i):
         "Sends window to tiler i"
 
+        currentTilers = self.current_tilers()
+
         #Minimize the window
         pwt.utilities.minimize(window)
 
-        #Remove the window if it's in the tiler
-        #Retile the windows if any changes have been made
-        if window in self.tilers[self.currentTiler].windows:
-
-            self.tilers[self.currentTiler].windows.remove(window)
-            self.tilers[self.currentTiler].tile_windows()
-
         #Add window if it's not already in the target tiler
-        if window not in self.tilers[i].windows:
+        if window not in currentTilers[i].windows:
 
-            self.tilers[i].windows.append(window)
+            currentTilers[i].windows.append(window)
 
     ###
     #Hotkey handlers
@@ -292,143 +292,163 @@ class Controller(object):
         "Handles alt+1, switches workspace"
         
         if self.currentWorkspace != 0:
+
             self.switch_workspace(0)
 
     def handler_alt_two(self):
         "Handles alt+2, switches workspace"
         
         if self.currentWorkspace != 1:
+
             self.switch_workspace(1)
 
     def handler_alt_three(self):
         "Handles alt+3, switches workspace"
         
         if self.currentWorkspace != 2:
+
             self.switch_workspace(2)
 
     def handler_alt_four(self):
         "Handles alt+4, switches workspace"
         
         if self.currentWorkspace != 3:
+
             self.switch_workspace(3)
 
     def handler_alt_five(self):
         "Handles alt+5, switches workspace"
         
         if self.currentWorkspace != 4:
+
             self.switch_workspace(4)
 
     def handler_alt_six(self):
         "Handles alt+6, switches workspace"
         
         if self.currentWorkspace != 5:
+
             self.switch_workspace(5)
 
     def handler_alt_seven(self):
         "Handles alt+7, switches workspace"
         
         if self.currentWorkspace != 6:
+
             self.switch_workspace(6)
 
     def handler_alt_eight(self):
         "Handles alt+8, switches workspace"
         
         if self.currentWorkspace != 7:
+
             self.switch_workspace(7)
 
     def handler_alt_nine(self):
         "Handles alt+9, switches workspace"
         
         if self.currentWorkspace != 8:
+
             self.switch_workspace(8)
 
     def handler_alt_shift_one(self):
         "Handles alt+shift+1, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 0:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 0)
+            if window:
 
+                self.send_window_to_tiler(window, 0)
 
     def handler_alt_shift_two(self):
         "Handles alt+shift+2, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 1:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 1)
+            if window:
+
+                self.send_window_to_tiler(window, 1)
 
     def handler_alt_shift_three(self):
         "Handles alt+shift+3, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 2:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 2)
+            if window:
 
+                self.send_window_to_tiler(window, 2)
 
     def handler_alt_shift_four(self):
         "Handles alt+shift+4, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 3:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 3)
+            if window:
 
+                self.send_window_to_tiler(window, 3)
 
     def handler_alt_shift_five(self):
         "Handles alt+shift+5, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 4:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 4)
+            if window:
 
+                self.send_window_to_tiler(window, 4)
 
     def handler_alt_shift_six(self):
         "Handles alt+shift+6, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 5:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 5)
+            if window:
 
+                self.send_window_to_tiler(window, 5)
 
     def handler_alt_shift_seven(self):
         "Handles alt+shift+7, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 6:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 6)
+            if window:
 
+                self.send_window_to_tiler(window, 6)
 
     def handler_alt_shift_eight(self):
         "Handles alt+shift+8, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 7:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 7)
+            if window:
 
+                self.send_window_to_tiler(window, 7)
 
     def handler_alt_shift_nine(self):
         "Handles alt+shift+9, sends window to appropriate tiler"
 
-        window = pwt.utilities.focused_window() 
+        if self.currentWorkspace != 8:
 
-        if window:
+            window = pwt.utilities.focused_window() 
 
-            self.send_window_to_tiler(window, 8)
+            if window:
+
+                self.send_window_to_tiler(window, 8)
 
     def handler_alt_shift_D(self):
 
