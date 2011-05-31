@@ -1,17 +1,17 @@
 from pwt.hotkeylistener import HotkeyListener
-from pwt.windowlistener import WindowListener
+from pwt.windowcaller import WindowCaller
 from pwt.tiler import Tiler
 from pwt.systrayicon import SysTrayIcon
 
 import glob
 import time
-import pwt.windowutilities
+import pwt.utilities
 
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
 
-
+import win32api
 class Controller(object):
 
     def __init__(self):
@@ -19,7 +19,7 @@ class Controller(object):
 
         self.ICONFOLDER = "icons/"
         #create <<classname>> based ignorelist
-        FLOATS = (#This list may hurt performance if it's huge
+        self.FLOATS = (#This list may hurt performance if it's huge
                 #"progman"			#example
                 #, "progman"		#example
                 )
@@ -55,7 +55,8 @@ class Controller(object):
                 , 28: (MOD_ALT + MOD_SHIFT, ord("7"))
                 , 29: (MOD_ALT + MOD_SHIFT, ord("8"))
                 , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
-                , 31: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 31: (MOD_ALT + MOD_SHIFT, ord("D"))
+                , 32: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
@@ -89,27 +90,40 @@ class Controller(object):
                 , 28:  self.handler_alt_shift_seven
                 , 29:  self.handler_alt_shift_eight
                 , 30:  self.handler_alt_shift_nine
-                , 31:  self.handler_alt_shift_Q
+                , 31:  self.handler_alt_shift_D
+                , 32:  self.handler_alt_shift_Q
                 }
 
         self.stop = False
 
         #Create the listeners
         self.hotkeylistener = HotkeyListener(HOTKEYS, HOTKEYHANDLERS)
-        self.windowlistener = WindowListener(FLOATS)
 
-        #Create 9 tilers
-        self.tilers = []
-        self.currentTiler = 0
-        
-        for i in range(9):
+        #Create a dictionary mapping 9 tilers per monitor
+        self.monitorTilers = {}
+        self.currentWorkspace = 0
 
-            self.tilers.append(Tiler())
+        for monitorTuple in win32api.EnumDisplayMonitors():
+
+            tilers = []
+
+            for i in range(9):
+
+                tilers.append(Tiler(pwt.utilities.get_monitor_workrectangle(monitorTuple[0])))
+
+            self.monitorTilers[int(monitorTuple[0])] = tilers 
+
+        print(self.monitorTilers.keys())
 
     def icon(self):
         "Return the appropriate icon"
 
-        return self.ICONFOLDER + str(self.currentTiler + 1) + ".ico"
+        return self.ICONFOLDER + str(self.currentWorkspace + 1) + ".ico"
+
+    def current_tiler(self):
+        "Return current tiler"
+
+        return self.monitorTilers[pwt.utilities.current_tiler
 
     ###
     #Commands
@@ -133,8 +147,13 @@ class Controller(object):
                 #Sleep for 0.05 to save resources
                 time.sleep(0.05)
 
+                windowcaller = WindowCaller(self.FLOATS)
+
+                for monitor, tilers in self.monitorTilers.items():
+
+                    tilers[self.currentWorkspace].merge_windows(windowcaller.windows_for_monitor(monitor))
+
                 #Use the listeners
-                self.windowlistener.listen_to_windows(self.tilers[self.currentTiler].tile_windows)
                 self.hotkeylistener.listen_to_keys()
 
         finally:
@@ -154,24 +173,24 @@ class Controller(object):
         #Minize all windows that aren't in the next tiler
         for window in (set(self.tilers[self.currentTiler].windows) - set(self.tilers[i].windows)):
 
-            pwt.windowutilities.minimize(window)
+            pwt.utilities.minimize(window)
 
         #Show all windows that weren't in the previous tiler
         for window in (set(self.tilers[i].windows) - set(self.tilers[self.currentTiler].windows)):
 
-            pwt.windowutilities.show(window)
+            pwt.utilities.show(window)
 
         #Tile the windows from the target tiler and reload the appropriate settings
         self.tilers[i].tile_windows()
         self.currentTiler = i
         self.systrayicon.refresh_icon(self.icon())
-        self.windowlistener.reload_windows(self.tilers[self.currentTiler].windows)
+        self.windowcaller.reload_windows(self.tilers[self.currentTiler].windows)
 
     def send_window_to_tiler(self, window, i):
         "Sends window to tiler i"
 
         #Minimize the window
-        pwt.windowutilities.minimize(window)
+        pwt.utilities.minimize(window)
 
         #Remove the window if it's in the tiler
         #Retile the windows if any changes have been made
@@ -242,16 +261,16 @@ class Controller(object):
     def handler_alt_shift_C(self):
         "Handles alt+shift+C, closes the current window"
 
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
-        pwt.windowutilities.close(window)
+        pwt.utilities.close(window)
 
     def handler_alt_shift_V(self):
         "Handles alt+shift+V, minimizes the current window"
 
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
-        pwt.windowutilities.minimize(window)
+        pwt.utilities.minimize(window)
 
     def handler_alt_one(self):
         "Handles alt+1, switches tiler"
@@ -316,7 +335,7 @@ class Controller(object):
     def handler_alt_shift_one(self):
         "Handles alt+shift+1, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -326,7 +345,7 @@ class Controller(object):
     def handler_alt_shift_two(self):
         "Handles alt+shift+2, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -335,7 +354,7 @@ class Controller(object):
     def handler_alt_shift_three(self):
         "Handles alt+shift+3, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -345,7 +364,7 @@ class Controller(object):
     def handler_alt_shift_four(self):
         "Handles alt+shift+4, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -355,7 +374,7 @@ class Controller(object):
     def handler_alt_shift_five(self):
         "Handles alt+shift+5, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -365,7 +384,7 @@ class Controller(object):
     def handler_alt_shift_six(self):
         "Handles alt+shift+6, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -375,7 +394,7 @@ class Controller(object):
     def handler_alt_shift_seven(self):
         "Handles alt+shift+7, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -385,7 +404,7 @@ class Controller(object):
     def handler_alt_shift_eight(self):
         "Handles alt+shift+8, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
@@ -395,11 +414,15 @@ class Controller(object):
     def handler_alt_shift_nine(self):
         "Handles alt+shift+9, sends window to appropriate tiler"
 
-        window = pwt.windowutilities.get_focused_window() 
+        window = pwt.utilities.focused_window() 
 
         if window:
 
             self.send_window_to_tiler(window, 8)
+
+    def handler_alt_shift_D(self):
+
+        pwt.utilities.undecorate(pwt.utilities.focused_window())
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"

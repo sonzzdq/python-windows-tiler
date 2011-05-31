@@ -1,40 +1,61 @@
-import ctypes
-import pwt.windowutilities
+import pwt.utilities
 
-from win32con import SPI_GETWORKAREA
-
-import time
 class Tiler(object):
 
-    def __init__(self):
+    def __init__(self, rectangle):
 
-        class Crect(ctypes.Structure):
-            _fields_ = [('left', ctypes.c_ulong),
-                    ('top', ctypes.c_ulong),
-                    ('right', ctypes.c_ulong),
-                    ('bottom', ctypes.c_ulong)]
+        #rectangle
+        #(left, top, right, bottom)
+        self.left = rectangle[0]
+        self.top = rectangle[1]
 
-        r = Crect()
-
-        ctypes.windll.user32.SystemParametersInfoA(SPI_GETWORKAREA, 0, ctypes.byref(r), 0)
-
-        self.width = r.right - r.left
-        self.height = r.bottom - r.top
+        self.width = rectangle[2] - rectangle[0]
+        self.height = rectangle[3] - rectangle[1]
 
         self.masterareaWidth = self.width // 2
         self.masterareaSize = 1
 
         self.windows = []
 
-    def tile_windows(self, windows=None):
+    def merge_windows(self, newWindows):
+        "Enumerateswindows, when the amount of windows changes it calls the handler, passing the current windows"
+
+        reTile = False
+        currentAmount = len(self.windows)
+        newAmount = len(newWindows)
+
+        #check for window changement
+        if newAmount > currentAmount:
+
+            for window in newWindows:
+
+                if window not in self.windows:
+
+                    self.windows.append(window)
+                    reTile = True
+                    print ("Add handle: ", window)
+
+        elif currentAmount > newAmount:
+
+            for window in self.windows:
+
+                if window not in newWindows:
+
+                    self.windows.remove(window)
+                    reTile = True
+                    print ("Remove handle: ", window)
+
+        if reTile:
+
+            #call the handler
+            self.tile_windows()
+
+    def tile_windows(self):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
-
-        if windows is not None:
-
-            self.windows = windows
 
         if len(self.windows) > 1:
 
+            #set the appropriate height depending on the amount of windows compared to the mastersize
             if self.masterareaSize == len(self.windows):
 
                 height = self.height
@@ -43,6 +64,7 @@ class Tiler(object):
 
                 height = self.height // (len(self.windows) - self.masterareaSize)
 
+            #set the appropriate height and width for the tile side
             if self.masterareaSize >= len(self.windows):
 
                 heightMaster = self.height // len(self.windows)
@@ -57,17 +79,17 @@ class Tiler(object):
 
                 if i in range(self.masterareaSize):
 
-                    rectangleCoordinates = (0,i * heightMaster, width, (i + 1) * heightMaster)
+                    rectangleCoordinates = (self.left, self.top + i * heightMaster, self.left + width, self.top + (i + 1) * heightMaster)
 
                 else:
 
-                    rectangleCoordinates = (width, (i - self.masterareaSize) * height, self.width, (i - self.masterareaSize + 1) * height)
+                    rectangleCoordinates = (self.left + width, self.top + (i - self.masterareaSize) * height, self.left + self.width, self.top + (i - self.masterareaSize + 1) * height)
 
-                pwt.windowutilities.tile(window, rectangleCoordinates)
+                pwt.utilities.tile(window, rectangleCoordinates)
 
-        elif len(self.windows) > 0:
+        elif len(self.windows) == 1:
 
-            pwt.windowutilities.tile(self.windows[0], (0, 0, self.width, self.height))
+            pwt.utilities.tile(self.windows[0], (self.left, self.top, self.left + self.width, self.top + self.height))
 
     ############################################
     ### Start of the commands
@@ -99,7 +121,7 @@ class Tiler(object):
         "Sets focus on the next window"
 
         #get focused window
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -112,8 +134,8 @@ class Tiler(object):
                 i = 0
 
             #focus window and cursor
-            pwt.windowutilities.focus(self.windows[i])
-            pwt.windowutilities.set_cursor_window(self.windows[i])
+            pwt.utilities.focus(self.windows[i])
+            pwt.utilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -123,7 +145,7 @@ class Tiler(object):
         "Sets focus on the previous window"
 
         #get focused window
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -136,8 +158,8 @@ class Tiler(object):
                 i = len(self.windows) - 1
 
             #focus window and cursor
-            pwt.windowutilities.focus(self.windows[i])
-            pwt.windowutilities.set_cursor_window(self.windows[i])
+            pwt.utilities.focus(self.windows[i])
+            pwt.utilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -148,19 +170,19 @@ class Tiler(object):
 
         if len(self.windows):
 
-            pwt.windowutilities.focus(self.windows[0])
-            pwt.windowutilities.set_cursor_window(self.windows[0])
+            pwt.utilities.focus(self.windows[0])
+            pwt.utilities.set_cursor_window(self.windows[0])
 
     def move_focusedwindow_down(self):
         "Switches the window to the next position"
         
         #get focused window
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(pwt.windowutilities.get_focused_window())
+            i = self.windows.index(pwt.utilities.focused_window())
 
             #if the foreground window is the last window, shift everything and place it first
             if i == len(self.windows) - 1:
@@ -178,12 +200,12 @@ class Tiler(object):
     def move_focusedwindow_up(self):
         "Switches the window to the previous position"
 
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(pwt.windowutilities.get_focused_window())
+            i = self.windows.index(pwt.utilities.focused_window())
 
             #if the foreground window is first, shift everything and place it last
             if i == 0:
@@ -203,7 +225,7 @@ class Tiler(object):
     def move_focusedwindow_to_masterarea(self):
         "Moves the focused window to the first place in the masterarea"
 
-        window = pwt.windowutilities.get_focused_window()
+        window = pwt.utilities.focused_window()
 
         #only move the focused window if it is in the tiler
         if window in self.windows:

@@ -1,8 +1,6 @@
 import ctypes
 from ctypes import wintypes
 
-import time
-
 from win32con import WM_HOTKEY
 from win32con import PM_REMOVE
 
@@ -22,8 +20,6 @@ class HotkeyListener(object):
         "Registers the hotkeys that are created on initialization"
 
         for i, (modifiers, vk) in self.hotkeys.items():
-
-            print ("Registering key: ", modifiers, vk)
 
             if not user32.RegisterHotKey (None, i, modifiers, vk):
 
@@ -52,7 +48,8 @@ class HotkeyListener(object):
             if self.msg.wParam in self.hotkeyhandlers.keys():
 
                 #execute the hotkey handler
-                self.hotkeyhandlers.get(self.msg.wParam)()
+                #self.hotkeyhandlers.get(self.msg.wParam)()
+                self.hotkeyhandlers[self.msg.wParam]()
 
             user32.TranslateMessage(byref(self.msg))
             user32.DispatchMessageA(byref(self.msg))
