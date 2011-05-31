@@ -123,7 +123,7 @@ class Controller(object):
     def current_tiler(self):
         "Return current tiler"
 
-        return self.monitorTilers[pwt.utilities.current_tiler
+        return self.monitorTilers[pwt.utilities.current_monitor()][self.currentWorkspace]
 
     ###
     #Commands
@@ -167,24 +167,40 @@ class Controller(object):
             self.systrayicon.destroy()
 
 
-    def switch_tiler(self, i):
-        "Switch the current tiler into tiler i"
+    def switch_workspace(self, i):
+        "Switch the current workspace into workspace i"
 
-        #Minize all windows that aren't in the next tiler
-        for window in (set(self.tilers[self.currentTiler].windows) - set(self.tilers[i].windows)):
+        allCurrentWindows = []
+        allNewWindows = []
+
+        #Make a set of all the windows in the current workspace
+        for tilers in self.monitorTilers.values():
+
+            allCurrentWindows.extend(tilers[self.currentWorkspace].windows)
+
+        #Make a set of all the windows in the new workspace
+        for tilers in self.monitorTilers.values():
+
+            allNewWindows.extend(tilers[i].windows)
+
+        #Minimize all windows that aren't in the new workspace
+        for window in set(allCurrentWindows) - set(allNewWindows):
 
             pwt.utilities.minimize(window)
 
-        #Show all windows that weren't in the previous tiler
-        for window in (set(self.tilers[i].windows) - set(self.tilers[self.currentTiler].windows)):
+        #Show all windows that weren't in the current workspace
+        for window in set(allNewWindows) - set(allCurrentWindows):
 
             pwt.utilities.show(window)
 
-        #Tile the windows from the target tiler and reload the appropriate settings
-        self.tilers[i].tile_windows()
-        self.currentTiler = i
+        #Minize all windows that aren't in the next tiler
+        for tilers in self.monitorTilers.values():
+
+            #Tile the windows from the target tiler and reload the appropriate settings
+            tilers[i].tile_windows()
+
+        self.currentWorkspace = i
         self.systrayicon.refresh_icon(self.icon())
-        self.windowcaller.reload_windows(self.tilers[self.currentTiler].windows)
 
     def send_window_to_tiler(self, window, i):
         "Sends window to tiler i"
@@ -211,52 +227,52 @@ class Controller(object):
     def handler_alt_H(self):
         "Handles alt+H, decreases the masterwidth"
 
-        self.tilers[self.currentTiler].decrease_masterarea_width()
+        self.current_tiler().decrease_masterarea_width()
 
     def handler_alt_L(self):
         "Handles alt+L, increases the masterwidth"
 
-        self.tilers[self.currentTiler].increase_masterarea_width()
+        self.current_tiler().increase_masterarea_width()
 
     def handler_alt_J(self):
         "Handles alt+J, sets focus on the next window"
 
-        self.tilers[self.currentTiler].set_focus_down()
+        self.current_tiler().set_focus_down()
 
     def handler_alt_K(self):
         "Handles alt+K, sets focus on the previous window"
 
-        self.tilers[self.currentTiler].set_focus_up()
+        self.current_tiler().set_focus_up()
 
     def handler_alt_return(self):
         "Handles alt+RETURN, sets focus on the masterarea"
 
-        self.tilers[self.currentTiler].set_focus_to_masterarea()
+        self.current_tiler().set_focus_to_masterarea()
 
     def handler_alt_shift_J(self):
         "Handles alt+shift+J, switches the window to the next position"
 
-        self.tilers[self.currentTiler].move_focusedwindow_down()
+        self.current_tiler().move_focusedwindow_down()
 
     def handler_alt_shift_K(self):
         "Handles alt+shift+K, switches the window to the previous position"
 
-        self.tilers[self.currentTiler].move_focusedwindow_up()
+        self.current_tiler().move_focusedwindow_up()
 
     def handler_alt_shift_return(self):
         "Handles alt+shift+RETURN, switches the window to the masterarea"
 
-        self.tilers[self.currentTiler].move_focusedwindow_to_masterarea()
+        self.current_tiler().move_focusedwindow_to_masterarea()
 
     def handler_alt_shift_L(self):
         "Handles alt+shift+L, decreases the masterarea size"
 
-        self.tilers[self.currentTiler].decrease_masterarea_size()
+        self.current_tiler().decrease_masterarea_size()
 
     def handler_alt_shift_H(self):
         "Handles alt+shift+H, increases the masterarea size"
 
-        self.tilers[self.currentTiler].increase_masterarea_size()
+        self.current_tiler().increase_masterarea_size()
 
     def handler_alt_shift_C(self):
         "Handles alt+shift+C, closes the current window"
@@ -273,64 +289,58 @@ class Controller(object):
         pwt.utilities.minimize(window)
 
     def handler_alt_one(self):
-        "Handles alt+1, switches tiler"
+        "Handles alt+1, switches workspace"
         
-        if self.currentTiler != 0:
-            self.switch_tiler(0)
+        if self.currentWorkspace != 0:
+            self.switch_workspace(0)
 
     def handler_alt_two(self):
-        "Handles alt+2, switches tiler"
+        "Handles alt+2, switches workspace"
         
-        if self.currentTiler != 1:
-            self.switch_tiler(1)
+        if self.currentWorkspace != 1:
+            self.switch_workspace(1)
 
     def handler_alt_three(self):
-        "Handles alt+3, switches tiler"
+        "Handles alt+3, switches workspace"
         
-        if self.currentTiler != 2:
-            self.switch_tiler(2)
-
+        if self.currentWorkspace != 2:
+            self.switch_workspace(2)
 
     def handler_alt_four(self):
-        "Handles alt+4, switches tiler"
+        "Handles alt+4, switches workspace"
         
-        if self.currentTiler != 3:
-            self.switch_tiler(3)
-
+        if self.currentWorkspace != 3:
+            self.switch_workspace(3)
 
     def handler_alt_five(self):
-        "Handles alt+5, switches tiler"
+        "Handles alt+5, switches workspace"
         
-        if self.currentTiler != 4:
-            self.switch_tiler(4)
-
+        if self.currentWorkspace != 4:
+            self.switch_workspace(4)
 
     def handler_alt_six(self):
-        "Handles alt+6, switches tiler"
+        "Handles alt+6, switches workspace"
         
-        if self.currentTiler != 5:
-            self.switch_tiler(5)
-
+        if self.currentWorkspace != 5:
+            self.switch_workspace(5)
 
     def handler_alt_seven(self):
-        "Handles alt+7, switches tiler"
+        "Handles alt+7, switches workspace"
         
-        if self.currentTiler != 6:
-            self.switch_tiler(6)
-
+        if self.currentWorkspace != 6:
+            self.switch_workspace(6)
 
     def handler_alt_eight(self):
-        "Handles alt+8, switches tiler"
+        "Handles alt+8, switches workspace"
         
-        if self.currentTiler != 7:
-            self.switch_tiler(7)
-
+        if self.currentWorkspace != 7:
+            self.switch_workspace(7)
 
     def handler_alt_nine(self):
-        "Handles alt+9, switches tiler"
+        "Handles alt+9, switches workspace"
         
-        if self.currentTiler != 8:
-            self.switch_tiler(8)
+        if self.currentWorkspace != 8:
+            self.switch_workspace(8)
 
     def handler_alt_shift_one(self):
         "Handles alt+shift+1, sends window to appropriate tiler"

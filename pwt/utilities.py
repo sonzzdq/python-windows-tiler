@@ -44,7 +44,7 @@ def undecorate(window):
 def current_monitor():
     "Returns current monitor based on focused window"
 
-    return win32api.MonitorFromWindow(win32gui.GetForegroundWindow(),win32con.MONITOR_DEFAULTTONEAREST)
+    return int(win32api.MonitorFromWindow(win32gui.GetForegroundWindow(),win32con.MONITOR_DEFAULTTONEAREST))
 
 def get_monitor_workrectangle(monitor):
 

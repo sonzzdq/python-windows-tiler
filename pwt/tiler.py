@@ -96,9 +96,9 @@ class Tiler(object):
     ############################################
 
     def decrease_masterarea_width(self):
-        "Decreases the masterarea width by 100px"
+        "Decreases the masterarea width by 150px, else windows might overlap into different monitors and cause problems"
 
-        if self.masterareaWidth >= 100:
+        if self.masterareaWidth >= 150:
 
             #decrease master areaWidth 
             self.masterareaWidth -= 100
@@ -107,9 +107,9 @@ class Tiler(object):
             self.tile_windows()
 
     def increase_masterarea_width(self):
-        "Increases the masterarea width by 100px"
+        "Increases the masterarea width by 150px, else windows might overlap into different monitors and cause problems"
 
-        if self.width - self.masterareaWidth >= 100:
+        if self.width - self.masterareaWidth >= 150:
 
             #increase master areaWidth 
             self.masterareaWidth += 100
