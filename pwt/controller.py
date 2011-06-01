@@ -55,10 +55,10 @@ class Controller(object):
                 , 28: (MOD_ALT + MOD_SHIFT, ord("7"))
                 , 29: (MOD_ALT + MOD_SHIFT, ord("8"))
                 , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
-                , 31: (MOD_ALT, ord("F"))
-                , 32: (MOD_ALT, ord("D"))
-                , 33: (MOD_ALT + MOD_SHIFT, ord("F"))
-                , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
+                , 31: (MOD_ALT, ord("I"))
+                , 32: (MOD_ALT, ord("U"))
+                , 33: (MOD_ALT + MOD_SHIFT, ord("I"))
+                , 34: (MOD_ALT + MOD_SHIFT, ord("U"))
                 , 35: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
@@ -93,10 +93,10 @@ class Controller(object):
                 , 28:  self.handler_alt_shift_seven
                 , 29:  self.handler_alt_shift_eight
                 , 30:  self.handler_alt_shift_nine
-                , 31:  self.handler_alt_F
-                , 32:  self.handler_alt_D
-                , 33:  self.handler_alt_shift_F
-                , 34:  self.handler_alt_shift_D
+                , 31:  self.handler_alt_I
+                , 32:  self.handler_alt_U
+                , 33:  self.handler_alt_shift_I
+                , 34:  self.handler_alt_shift_U
                 , 35:  self.handler_alt_shift_Q
                 }
 
@@ -456,7 +456,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 8)
 
-    def handler_alt_F(self):
+    def handler_alt_U(self):
         "Handles alt+F, changes focus to the next monitor"
 
         monitor = pwt.utilities.current_monitor()
@@ -479,7 +479,7 @@ class Controller(object):
 
             pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
 
-    def handler_alt_D(self):
+    def handler_alt_U(self):
         "Handles alt+F, changes focus to the previous monitor"
 
         monitor = pwt.utilities.current_monitor()
@@ -502,7 +502,7 @@ class Controller(object):
 
             pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
 
-    def handler_alt_shift_F(self):
+    def handler_alt_shift_I(self):
 
         window = pwt.utilities.focused_window()
         monitor = pwt.utilities.current_monitor()
@@ -531,7 +531,7 @@ class Controller(object):
 
             pwt.utilities.focus(window)
 
-    def handler_alt_shift_D(self):
+    def handler_alt_shift_U(self):
 
         window = pwt.utilities.focused_window()
         monitor = pwt.utilities.current_monitor()
