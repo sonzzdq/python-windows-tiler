@@ -456,7 +456,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 8)
 
-    def handler_alt_U(self):
+    def handler_alt_I(self):
         "Handles alt+F, changes focus to the next monitor"
 
         monitor = pwt.utilities.current_monitor()
