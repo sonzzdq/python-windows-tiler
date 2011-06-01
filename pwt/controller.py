@@ -57,7 +57,9 @@ class Controller(object):
                 , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
                 , 31: (MOD_ALT, ord("F"))
                 , 32: (MOD_ALT, ord("D"))
-                , 33: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 33: (MOD_ALT + MOD_SHIFT, ord("F"))
+                , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
+                , 35: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
@@ -93,7 +95,9 @@ class Controller(object):
                 , 30:  self.handler_alt_shift_nine
                 , 31:  self.handler_alt_F
                 , 32:  self.handler_alt_D
-                , 33:  self.handler_alt_shift_Q
+                , 33:  self.handler_alt_shift_F
+                , 34:  self.handler_alt_shift_D
+                , 35:  self.handler_alt_shift_Q
                 }
 
         self.stop = False
@@ -494,9 +498,63 @@ class Controller(object):
 
             pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
 
-    #def handler_alt_shift_F(self):
+    def handler_alt_shift_F(self):
 
-    #def handler_alt_shift_D(self):
+        window = pwt.utilities.focused_window()
+        monitor = pwt.utilities.current_monitor()
+        monitors = list(self.monitorTilers.keys())
+
+        if monitor in monitors:
+
+            i = monitors.index(monitor) + 1
+
+            if i >= len(monitors):
+
+                    i = 0
+
+            currentTiler = self.monitorTilers[monitor][self.currentWorkspace]
+            targetTiler = self.monitorTilers[monitors[i]][self.currentWorkspace]
+            
+            if window in currentTiler.windows:
+
+                currentTiler.windows.remove(window)
+                currentTiler.tile_windows()
+
+            if window not in targetTiler.windows:
+
+                targetTiler.windows.append(window)
+                targetTiler.tile_windows()
+
+            pwt.utilities.focus(window)
+
+    def handler_alt_shift_D(self):
+
+        window = pwt.utilities.focused_window()
+        monitor = pwt.utilities.current_monitor()
+        monitors = list(self.monitorTilers.keys())
+
+        if monitor in monitors:
+
+            i = monitors.index(monitor) - 1
+
+            if i < 0:
+
+                    i = len(monitors) - 1
+
+            currentTiler = self.monitorTilers[monitor][self.currentWorkspace]
+            targetTiler = self.monitorTilers[monitors[i]][self.currentWorkspace]
+            
+            if window in currentTiler.windows:
+
+                currentTiler.windows.remove(window)
+                currentTiler.tile_windows()
+
+            if window not in targetTiler.windows:
+
+                targetTiler.windows.append(window)
+                targetTiler.tile_windows()
+
+            pwt.utilities.focus(window)
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"
