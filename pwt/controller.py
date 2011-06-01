@@ -59,7 +59,8 @@ class Controller(object):
                 , 32: (MOD_ALT, ord("U"))
                 , 33: (MOD_ALT + MOD_SHIFT, ord("I"))
                 , 34: (MOD_ALT + MOD_SHIFT, ord("U"))
-                , 35: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 35: (MOD_ALT + MOD_SHIFT, ord("D"))
+                , 36: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
@@ -97,7 +98,8 @@ class Controller(object):
                 , 32:  self.handler_alt_U
                 , 33:  self.handler_alt_shift_I
                 , 34:  self.handler_alt_shift_U
-                , 35:  self.handler_alt_shift_Q
+                , 35:  self.handler_alt_shift_D
+                , 36:  self.handler_alt_shift_Q
                 }
 
         self.stop = False
@@ -212,6 +214,12 @@ class Controller(object):
 
         self.currentWorkspace = i
         self.systrayicon.refresh_icon(self.icon())
+
+        window = pwt.utilities.window_under_cursor()
+
+        if window:
+
+            pwt.utilities.focus(window)
 
     def send_window_to_tiler(self, window, i):
         "Sends window to tiler i"
@@ -559,6 +567,10 @@ class Controller(object):
                 targetTiler.tile_windows()
 
             pwt.utilities.focus(window)
+
+    def handler_alt_shift_D(self):
+
+        pwt.utilities.undecorate(pwt.utilities.focused_window())
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"

@@ -5,23 +5,26 @@ from win32con import SW_FORCEMINIMIZE
 from win32con import SW_MINIMIZE
 from win32con import SW_SHOWNORMAL
 from win32con import WM_CLOSE
-from win32con import GWL_EXSTYLE
-from win32con import WS_BORDER
-from win32con import WS_DLGFRAME
-from win32con import SWP_FRAMECHANGED
+from win32con import GWL_STYLE
+from win32con import WS_CAPTION
+from win32con import WS_SIZEBOX
+from win32con import SWP_DRAWFRAME
+from win32con import SWP_SHOWWINDOW
+from win32con import MONITOR_DEFAULTTONEAREST
 
-import win32con
-def tile(window, rectangleCoordinates):
+def tile(window, windowPosition):
     "Tiles a window with the given coordinates"
 
     try:
 
         windowPlacement = win32gui.GetWindowPlacement(window)
-        win32gui.SetWindowPlacement(window, (windowPlacement[0]
-            , windowPlacement[1]
-            , windowPlacement[2]
-            , windowPlacement[3]
-            , rectangleCoordinates))
+        win32gui.SetWindowPos(window
+                ,None
+                ,windowPosition[0]
+                ,windowPosition[1]
+                ,windowPosition[2]
+                ,windowPosition[3]
+                ,SWP_SHOWWINDOW)
 
     except win32gui.error:
 
@@ -30,21 +33,20 @@ def tile(window, rectangleCoordinates):
 def undecorate(window):
     "Removes borders and decoration from window"
 
-    style = win32gui.GetWindowLong(window, GWL_EXSTYLE)
-    win32gui.SetWindowLong (window, GWL_EXSTYLE, 0)
+    style = win32gui.GetWindowLong(window, GWL_STYLE)
 
-    win32gui.SetWindowPos(window
-            ,None
-            ,0
-            ,0
-            ,0
-            ,0
-            ,win32con.SWP_FRAMECHANGED)
+    style |= WS_CAPTION 
+
+    style |= WS_SIZEBOX 
+
+    win32gui.SetWindowLong(window, GWL_STYLE, style)
+
+    #win32gui.SetWindowPos(window ,None ,0 ,0 ,0 ,0 ,0x0020)
 
 def current_monitor():
     "Returns current monitor based on focused window"
 
-    return int(win32api.MonitorFromWindow(win32gui.GetForegroundWindow(),win32con.MONITOR_DEFAULTTONEAREST))
+    return int(win32api.MonitorFromWindow(win32gui.GetForegroundWindow(),MONITOR_DEFAULTTONEAREST))
 
 def get_monitor_workrectangle(monitor):
 
@@ -75,6 +77,11 @@ def focused_window():
     "Grabs the current window"
 
     return win32gui.GetForegroundWindow()
+
+def window_under_cursor():
+    "Grabs the window under the cursor"
+
+    return win32gui.WindowFromPoint(win32api.GetCursorPos())
 
 def set_cursor_window(window):
     "Moves cursor to the given window"

@@ -79,17 +79,17 @@ class Tiler(object):
 
                 if i in range(self.masterareaSize):
 
-                    rectangleCoordinates = (self.left, self.top + i * heightMaster, self.left + width, self.top + (i + 1) * heightMaster)
+                    windowPosition = (self.left, self.top + i * heightMaster, width, heightMaster)
 
                 else:
 
-                    rectangleCoordinates = (self.left + width, self.top + (i - self.masterareaSize) * height, self.left + self.width, self.top + (i - self.masterareaSize + 1) * height)
+                    windowPosition = (self.left + width, self.top + (i - self.masterareaSize) * height, self.width - width, height)
 
-                pwt.utilities.tile(window, rectangleCoordinates)
+                pwt.utilities.tile(window, windowPosition)
 
         elif len(self.windows) == 1:
 
-            pwt.utilities.tile(self.windows[0], (self.left, self.top, self.left + self.width, self.top + self.height))
+            pwt.utilities.tile(self.windows[0], (self.left, self.top, self.width, self.height))
 
     ############################################
     ### Start of the commands
