@@ -470,8 +470,10 @@ class Controller(object):
 
                     i = 0
 
-            #Focus the first window in the current workspace of the next monitor in the monitorTiler dict
-            pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+            if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
+
+                #Focus the first window in the current workspace of the next monitor in the monitorTiler dict
+                pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
 
         else:
 
@@ -491,8 +493,10 @@ class Controller(object):
 
                     i = len(monitors) - 1
 
-            #Focus the first window in the current workspace of the previous monitor in the monitorTiler dict
-            pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+            if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
+
+                #Focus the first window in the current workspace of the previous monitor in the monitorTiler dict
+                pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
 
         else:
 
