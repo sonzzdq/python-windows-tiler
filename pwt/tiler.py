@@ -203,7 +203,7 @@ class Tiler(object):
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(pwt.utilities.focused_window())
+            i = self.windows.index(window)
 
             #if the foreground window is first, shift everything and place it last
             if i == 0:
