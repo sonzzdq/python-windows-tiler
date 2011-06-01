@@ -6,12 +6,12 @@ from pwt.systrayicon import SysTrayIcon
 import glob
 import time
 import pwt.utilities
+import win32api
 
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
 
-import win32api
 class Controller(object):
 
     def __init__(self):
@@ -55,8 +55,9 @@ class Controller(object):
                 , 28: (MOD_ALT + MOD_SHIFT, ord("7"))
                 , 29: (MOD_ALT + MOD_SHIFT, ord("8"))
                 , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
-                , 31: (MOD_ALT + MOD_SHIFT, ord("D"))
-                , 32: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 31: (MOD_ALT, ord("F"))
+                , 32: (MOD_ALT, ord("D"))
+                , 33: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
@@ -90,8 +91,9 @@ class Controller(object):
                 , 28:  self.handler_alt_shift_seven
                 , 29:  self.handler_alt_shift_eight
                 , 30:  self.handler_alt_shift_nine
-                , 31:  self.handler_alt_shift_D
-                , 32:  self.handler_alt_shift_Q
+                , 31:  self.handler_alt_F
+                , 32:  self.handler_alt_D
+                , 33:  self.handler_alt_shift_Q
                 }
 
         self.stop = False
@@ -123,7 +125,7 @@ class Controller(object):
     def current_tiler(self):
         "Return current tiler"
 
-        return self.monitorTilers[pwt.utilities.current_monitor()][self.currentWorkspace]
+        return self.current_tilers()[self.currentWorkspace]
 
     def current_tilers(self):
         "Return current tilers"
@@ -450,9 +452,51 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 8)
 
-    def handler_alt_shift_D(self):
+    def handler_alt_F(self):
+        "Handles alt+F, changes focus to the next monitor"
 
-        pwt.utilities.undecorate(pwt.utilities.focused_window())
+        monitor = pwt.utilities.current_monitor()
+        monitors = list(self.monitorTilers.keys())
+
+        if monitor in monitors:
+
+            i = monitors.index(monitor) + 1
+
+            if i >= len(monitors):
+
+                    i = 0
+
+            #Focus the first window in the current workspace of the next monitor in the monitorTiler dict
+            pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+
+        else:
+
+            pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
+
+    def handler_alt_D(self):
+        "Handles alt+F, changes focus to the previous monitor"
+
+        monitor = pwt.utilities.current_monitor()
+        monitors = list(self.monitorTilers.keys())
+
+        if monitor in monitors:
+
+            i = monitors.index(monitor) - 1
+
+            if i < 0:
+
+                    i = len(monitors) - 1
+
+            #Focus the first window in the current workspace of the previous monitor in the monitorTiler dict
+            pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+
+        else:
+
+            pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
+
+    #def handler_alt_shift_F(self):
+
+    #def handler_alt_shift_D(self):
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"

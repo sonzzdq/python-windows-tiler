@@ -135,7 +135,6 @@ class Tiler(object):
 
             #focus window and cursor
             pwt.utilities.focus(self.windows[i])
-            pwt.utilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -159,7 +158,6 @@ class Tiler(object):
 
             #focus window and cursor
             pwt.utilities.focus(self.windows[i])
-            pwt.utilities.set_cursor_window(self.windows[i])
 
         else:
 
@@ -182,7 +180,7 @@ class Tiler(object):
         #only grab and move the window if it is in the self
         if window in self.windows:
 
-            i = self.windows.index(pwt.utilities.focused_window())
+            i = self.windows.index(window)
 
             #if the foreground window is the last window, shift everything and place it first
             if i == len(self.windows) - 1:

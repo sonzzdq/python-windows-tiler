@@ -69,6 +69,7 @@ def focus(window):
     "Puts focus on the given window"
 
     win32gui.SetForegroundWindow(window)
+    set_cursor_window(window)
 
 def focused_window():
     "Grabs the current window"
