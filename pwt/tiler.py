@@ -169,7 +169,6 @@ class Tiler(object):
         if len(self.windows):
 
             pwt.utilities.focus(self.windows[0])
-            pwt.utilities.set_cursor_window(self.windows[0])
 
     def move_focusedwindow_down(self):
         "Switches the window to the next position"
