@@ -664,15 +664,17 @@ class Controller(object):
 
         if window:
 
-            if window.has_decorations():
+            if window.should_tile():
 
-                window.undecorate()
+                if window.has_decorations():
 
-            else:
+                    window.undecorate()
 
-                window.decorate()
+                else:
 
-            window.update()
+                    window.decorate()
+
+                window.update()
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"
