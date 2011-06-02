@@ -21,9 +21,6 @@ from win32con import WM_HOTKEY
 ##TILE EVENTS
 from win32con import HSHELL_WINDOWCREATED
 from win32con import HSHELL_WINDOWDESTROYED
-from win32con import HSHELL_ACTIVATESHELLWINDOW
-from win32con import HSHELL_WINDOWACTIVATED
-from win32con import HSHELL_GETMINRECT
 from win32con import HSHELL_REDRAW
 
 class Controller(object):
@@ -293,7 +290,7 @@ class Controller(object):
         #Hide all windows that aren't in the new workspace
         for window in set(allCurrentWindows) - set(allNewWindows):
 
-            pass#window.hide()
+            window.hide()
 
         #Show all windows that weren't in the current workspace
         for window in set(allNewWindows) - set(allCurrentWindows):
