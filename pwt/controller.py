@@ -318,17 +318,19 @@ class Controller(object):
         currentTiler = self.current_tiler()
 
         #hide the window
-        window.hide()
+        if window.should_tile():
 
-        if window in currentTiler.windows:
+            window.hide()
 
-            currentTiler.windows.remove(window)
-            currentTiler.tile_windows()
+            if window in currentTiler.windows:
 
-        #Add window if it's not already in the target tiler
-        if window not in currentTilers[i].windows:
+                currentTiler.windows.remove(window)
+                currentTiler.tile_windows()
 
-            currentTilers[i].windows.append(window)
+            #Add window if it's not already in the target tiler
+            if window not in currentTilers[i].windows:
+
+                currentTilers[i].windows.append(window)
 
 
     ###
