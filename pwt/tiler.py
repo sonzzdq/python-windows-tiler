@@ -1,4 +1,4 @@
-import pwt.utilities
+from pwt.window import Window
 
 class Tiler(object):
 
@@ -85,11 +85,11 @@ class Tiler(object):
 
                     windowPosition = (self.left + width, self.top + (i - self.masterareaSize) * height, self.width - width, height)
 
-                pwt.utilities.tile(window, windowPosition)
+                window.position(windowPosition)
 
         elif len(self.windows) == 1:
 
-            pwt.utilities.tile(self.windows[0], (self.left, self.top, self.width, self.height))
+            self.windows[0].position((self.left, self.top, self.width, self.height))
 
     ############################################
     ### Start of the commands
@@ -121,7 +121,7 @@ class Tiler(object):
         "Sets focus on the next window"
 
         #get focused window
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -134,7 +134,7 @@ class Tiler(object):
                 i = 0
 
             #focus window and cursor
-            pwt.utilities.focus(self.windows[i])
+            self.windows[i].focus()
 
         else:
 
@@ -144,7 +144,7 @@ class Tiler(object):
         "Sets focus on the previous window"
 
         #get focused window
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -157,7 +157,7 @@ class Tiler(object):
                 i = len(self.windows) - 1
 
             #focus window and cursor
-            pwt.utilities.focus(self.windows[i])
+            self.windows[i].focus()
 
         else:
 
@@ -168,13 +168,13 @@ class Tiler(object):
 
         if len(self.windows):
 
-            pwt.utilities.focus(self.windows[0])
+            self.windows[0].focus()
 
     def move_focusedwindow_down(self):
         "Switches the window to the next position"
         
         #get focused window
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
@@ -197,7 +197,7 @@ class Tiler(object):
     def move_focusedwindow_up(self):
         "Switches the window to the previous position"
 
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
 
         #only grab and move the window if it is in the self
         if window in self.windows:
@@ -222,7 +222,7 @@ class Tiler(object):
     def move_focusedwindow_to_masterarea(self):
         "Moves the focused window to the first place in the masterarea"
 
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
 
         #only move the focused window if it is in the tiler
         if window in self.windows:

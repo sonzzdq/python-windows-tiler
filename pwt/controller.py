@@ -1,16 +1,30 @@
-from pwt.hotkeylistener import HotkeyListener
+##PWT specific imports
+from pwt.hotkeycontroller import HotkeyController
 from pwt.windowcaller import WindowCaller
 from pwt.tiler import Tiler
 from pwt.systrayicon import SysTrayIcon
+from pwt.window import Window
+import pwt.utilities
 
+##Import needed python modules 
 import glob
 import time
-import pwt.utilities
-import win32api
 
+##KEYS
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
+
+##HOTKEY EVENTS
+from win32con import WM_HOTKEY
+
+##TILE EVENTS
+from win32con import HSHELL_WINDOWCREATED
+from win32con import HSHELL_WINDOWDESTROYED
+from win32con import HSHELL_ACTIVATESHELLWINDOW
+from win32con import HSHELL_WINDOWACTIVATED
+from win32con import HSHELL_GETMINRECT
+from win32con import HSHELL_REDRAW
 
 class Controller(object):
 
@@ -18,14 +32,29 @@ class Controller(object):
         "create the hotkey and window listeners on initialization"
 
         self.ICONFOLDER = "icons/"
+
+        self.WINDOWCLASSNAME = "PWT"
+
+        self.NAME = "PWT"
+
         #create <<classname>> based ignorelist
         self.FLOATS = (#This list may hurt performance if it's huge
                 #"progman"			#example
                 #, "progman"		#example
                 )
 
+        #the events that trigger the removal of a window
+        self.REMOVE_EVENTS = (HSHELL_WINDOWDESTROYED
+                ,#placeholder
+                )
+
+        #the events that trigger an additional window
+        self.ADD_EVENTS = (HSHELL_WINDOWCREATED
+                ,HSHELL_REDRAW
+                )
+
         #list the HOTKEYS that should be listened to
-        HOTKEYS = {1: (MOD_ALT, ord("H"))
+        self.HOTKEYS = {1: (MOD_ALT, ord("H"))
                 , 2: (MOD_ALT, ord("L"))
                 , 3: (MOD_ALT, ord("J"))
                 , 4: (MOD_ALT, ord("K"))
@@ -36,35 +65,34 @@ class Controller(object):
                 , 9: (MOD_ALT + MOD_SHIFT, ord("L"))
                 , 10: (MOD_ALT + MOD_SHIFT, ord("H"))
                 , 11: (MOD_ALT + MOD_SHIFT, ord("C"))
-                , 12: (MOD_ALT + MOD_SHIFT, ord("V"))
-                , 13: (MOD_ALT, ord("1"))
-                , 14: (MOD_ALT, ord("2"))
-                , 15: (MOD_ALT, ord("3"))
-                , 16: (MOD_ALT, ord("4"))
-                , 17: (MOD_ALT, ord("5"))
-                , 18: (MOD_ALT, ord("6"))
-                , 19: (MOD_ALT, ord("7"))
-                , 20: (MOD_ALT, ord("8"))
-                , 21: (MOD_ALT, ord("9"))
-                , 22: (MOD_ALT + MOD_SHIFT, ord("1"))
-                , 23: (MOD_ALT + MOD_SHIFT, ord("2"))
-                , 24: (MOD_ALT + MOD_SHIFT, ord("3"))
-                , 25: (MOD_ALT + MOD_SHIFT, ord("4"))
-                , 26: (MOD_ALT + MOD_SHIFT, ord("5"))
-                , 27: (MOD_ALT + MOD_SHIFT, ord("6"))
-                , 28: (MOD_ALT + MOD_SHIFT, ord("7"))
-                , 29: (MOD_ALT + MOD_SHIFT, ord("8"))
-                , 30: (MOD_ALT + MOD_SHIFT, ord("9"))
-                , 31: (MOD_ALT, ord("I"))
-                , 32: (MOD_ALT, ord("U"))
-                , 33: (MOD_ALT + MOD_SHIFT, ord("I"))
-                , 34: (MOD_ALT + MOD_SHIFT, ord("U"))
-                , 35: (MOD_ALT + MOD_SHIFT, ord("D"))
-                , 36: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 12: (MOD_ALT, ord("1"))
+                , 13: (MOD_ALT, ord("2"))
+                , 14: (MOD_ALT, ord("3"))
+                , 15: (MOD_ALT, ord("4"))
+                , 16: (MOD_ALT, ord("5"))
+                , 17: (MOD_ALT, ord("6"))
+                , 18: (MOD_ALT, ord("7"))
+                , 19: (MOD_ALT, ord("8"))
+                , 20: (MOD_ALT, ord("9"))
+                , 21: (MOD_ALT + MOD_SHIFT, ord("1"))
+                , 22: (MOD_ALT + MOD_SHIFT, ord("2"))
+                , 23: (MOD_ALT + MOD_SHIFT, ord("3"))
+                , 24: (MOD_ALT + MOD_SHIFT, ord("4"))
+                , 25: (MOD_ALT + MOD_SHIFT, ord("5"))
+                , 26: (MOD_ALT + MOD_SHIFT, ord("6"))
+                , 27: (MOD_ALT + MOD_SHIFT, ord("7"))
+                , 28: (MOD_ALT + MOD_SHIFT, ord("8"))
+                , 29: (MOD_ALT + MOD_SHIFT, ord("9"))
+                , 30: (MOD_ALT, ord("I"))
+                , 31: (MOD_ALT, ord("U"))
+                , 32: (MOD_ALT + MOD_SHIFT, ord("I"))
+                , 33: (MOD_ALT + MOD_SHIFT, ord("U"))
+                , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
+                , 35: (MOD_ALT + MOD_SHIFT, ord("Q"))
                 }
 
         #list the corresponding self.handlers 
-        HOTKEYHANDLERS = {1: self.handler_alt_H
+        self.HOTKEYHANDLERS = {1: self.handler_alt_H
                 , 2:  self.handler_alt_L
                 , 3:  self.handler_alt_J
                 , 4:  self.handler_alt_K
@@ -75,43 +103,38 @@ class Controller(object):
                 , 9:  self.handler_alt_shift_L
                 , 10:  self.handler_alt_shift_H
                 , 11:  self.handler_alt_shift_C
-                , 12:  self.handler_alt_shift_V
-                , 13:  self.handler_alt_one
-                , 14:  self.handler_alt_two
-                , 15:  self.handler_alt_three
-                , 16:  self.handler_alt_four
-                , 17:  self.handler_alt_five
-                , 18:  self.handler_alt_six
-                , 19:  self.handler_alt_seven
-                , 20:  self.handler_alt_eight
-                , 21:  self.handler_alt_nine
-                , 22:  self.handler_alt_shift_one
-                , 23:  self.handler_alt_shift_two
-                , 24:  self.handler_alt_shift_three
-                , 25:  self.handler_alt_shift_four
-                , 26:  self.handler_alt_shift_five
-                , 27:  self.handler_alt_shift_six
-                , 28:  self.handler_alt_shift_seven
-                , 29:  self.handler_alt_shift_eight
-                , 30:  self.handler_alt_shift_nine
-                , 31:  self.handler_alt_I
-                , 32:  self.handler_alt_U
-                , 33:  self.handler_alt_shift_I
-                , 34:  self.handler_alt_shift_U
-                , 35:  self.handler_alt_shift_D
-                , 36:  self.handler_alt_shift_Q
+                , 12:  self.handler_alt_one
+                , 13:  self.handler_alt_two
+                , 14:  self.handler_alt_three
+                , 15:  self.handler_alt_four
+                , 16:  self.handler_alt_five
+                , 17:  self.handler_alt_six
+                , 18:  self.handler_alt_seven
+                , 19:  self.handler_alt_eight
+                , 20:  self.handler_alt_nine
+                , 21:  self.handler_alt_shift_one
+                , 22:  self.handler_alt_shift_two
+                , 23:  self.handler_alt_shift_three
+                , 24:  self.handler_alt_shift_four
+                , 25:  self.handler_alt_shift_five
+                , 26:  self.handler_alt_shift_six
+                , 27:  self.handler_alt_shift_seven
+                , 28:  self.handler_alt_shift_eight
+                , 29:  self.handler_alt_shift_nine
+                , 30:  self.handler_alt_I
+                , 31:  self.handler_alt_U
+                , 32:  self.handler_alt_shift_I
+                , 33:  self.handler_alt_shift_U
+                , 34:  self.handler_alt_shift_D
+                , 35:  self.handler_alt_shift_Q
                 }
-
-        self.stop = False
-
-        #Create the listeners
-        self.hotkeylistener = HotkeyListener(HOTKEYS, HOTKEYHANDLERS)
 
         #Create a dictionary mapping 9 tilers per monitor
         self.monitorTilers = {}
         self.currentWorkspace = 0
 
-        for monitorTuple in win32api.EnumDisplayMonitors():
+        #For each monitor, create a monitorTiler dict item containing monitor:tilerList
+        for monitorTuple in pwt.utilities.display_monitors(): 
 
             tilers = []
 
@@ -121,7 +144,22 @@ class Controller(object):
 
             self.monitorTilers[int(monitorTuple[0])] = tilers 
 
-        print(self.monitorTilers.keys())
+        #Create systrayicon
+        self.systrayicon = SysTrayIcon(self.icon(), self.NAME, self.WINDOWCLASSNAME)
+
+        #Create a dummy window to register hooks to 
+        self.hwnd = Window.create_dummywindow(self.WINDOWCLASSNAME, self.NAME, pwt.utilities.module_handle()) 
+        
+        #Register a shellhook for the window
+        pwt.utilities.register_shellhook(self.hwnd) 
+                
+        #Create the hotkeycontroller with the hotkeys, handlers and window
+        self.hotkeycontroller = HotkeyController(self.HOTKEYS, self.HOTKEYHANDLERS, self.hwnd)
+
+        #Register hotkeys
+        self.hotkeycontroller.register_hotkeys()
+
+        self.stop = False
 
     def icon(self):
         "Return the appropriate icon"
@@ -145,40 +183,95 @@ class Controller(object):
     def start(self):
         "start the listeners with a safety try/finally to unregister keys and kill the icon"
 
-        print("start")
-
-        #Register hotkeys
-        self.hotkeylistener.register_hotkeys()
-
-        #Create systrayicon
-        self.systrayicon = SysTrayIcon(self.icon(), "PWT", "PWT")
+        #Do an initial lookup of all the windows and tile accordingly
+        self.control_and_handle_windows()
 
         try:
 
-            while not self.stop:
+            #message priming read
+            message = pwt.utilities.windowmessage(self.hwnd) 
 
-                #Sleep for 0.05 to save resources
-                time.sleep(0.05)
+            while message:
 
-                windowcaller = WindowCaller(self.FLOATS)
+                print(message)
+                #if message is WM_HOTKEY
+                if message[1][1] == WM_HOTKEY:
 
-                for monitor, tilers in self.monitorTilers.items():
+                    #execute the corresponding hotkeyhandler
+                    self.HOTKEYHANDLERS[message[1][2]]()
 
-                    tilers[self.currentWorkspace].merge_windows(windowcaller.windows_for_monitor(monitor))
+                #if lparam is a tile event
+                elif message[1][2] in self.ADD_EVENTS:
 
-                #Use the listeners
-                self.hotkeylistener.listen_to_keys()
+                    hwnd = message[1][3]
+                    
+                    if hwnd not in self.FLOATS:
+
+                        window = Window(hwnd)
+                        tiler = self.current_tiler()
+
+                        if window.should_tile() and window not in tiler.windows:
+                            
+                            window.undecorate()
+
+                            tiler.windows.append(window)
+
+                            tiler.tile_windows()
+
+                elif message[1][2] in self.REMOVE_EVENTS:
+
+                    hwnd = message[1][3]
+
+                    window = Window(hwnd)
+                    tiler = self.current_tiler()
+
+                    if window in tiler.windows:
+
+                        tiler.windows.remove(window)
+
+                        tiler.tile_windows()
+    
+                if self.stop:
+
+                    break
+
+                #Grab the next message from the self.hwnd message queue
+                message = pwt.utilities.windowmessage(self.hwnd) 
 
         finally:
 
-            print("stop")
+            #Unregister hotkeys and shellhook
+            self.hotkeycontroller.unregister_hotkeys()
+            pwt.utilities.unregister_shellhook(self.hwnd)
 
-            #Unregister hotkeys
-            self.hotkeylistener.unregister_hotkeys()
+            #Decorate windows
+            for tilers in self.monitorTilers.values():
+
+                for tiler in tilers:
+
+                    for window in tiler.windows:
+
+                        window.decorate()
+                        window.update()
 
             #Remove systrayicon
             self.systrayicon.destroy()
 
+            #Destroy window
+            Window.destroy(self.hwnd)
+
+    def control_and_handle_windows(self):
+        "Controls and handles all the windows on the screen, merging the changes with the tilers"
+
+        #Create a caller
+        self.windowcaller = WindowCaller(self.FLOATS)
+
+        #Do a tile for each monitor
+        for monitor, tilers in self.monitorTilers.items():
+
+            tilers[self.currentWorkspace].windows = self.windowcaller.windows_for_monitor(monitor)
+
+            tilers[self.currentWorkspace].tile_windows()
 
     def switch_workspace(self, i):
         "Switch the current workspace into workspace i"
@@ -196,43 +289,50 @@ class Controller(object):
 
             allNewWindows.extend(tilers[i].windows)
 
-        #Minimize all windows that aren't in the new workspace
+        print(type(set(allNewWindows) - set(allCurrentWindows)))
+        #Hide all windows that aren't in the new workspace
         for window in set(allCurrentWindows) - set(allNewWindows):
 
-            pwt.utilities.minimize(window)
+            pass#window.hide()
 
         #Show all windows that weren't in the current workspace
         for window in set(allNewWindows) - set(allCurrentWindows):
 
-            pwt.utilities.show(window)
+            window.show()
 
-        #Minize all windows that aren't in the next tiler
+        #Retile all tilers in the current workspace
         for tilers in self.monitorTilers.values():
 
-            #Tile the windows from the target tiler and reload the appropriate settings
             tilers[i].tile_windows()
 
         self.currentWorkspace = i
         self.systrayicon.refresh_icon(self.icon())
 
-        window = pwt.utilities.window_under_cursor()
+        window = Window.window_under_cursor()
 
         if window:
 
-            pwt.utilities.focus(window)
+            window.focus()
 
     def send_window_to_tiler(self, window, i):
-        "Sends window to tiler i"
+        "sends window to tiler i"
 
         currentTilers = self.current_tilers()
+        currentTiler = self.current_tiler()
 
-        #Minimize the window
-        pwt.utilities.minimize(window)
+        #hide the window
+        window.hide()
+
+        if window in currentTiler.windows:
+
+            currentTiler.windows.remove(window)
+            currentTiler.tile_windows()
 
         #Add window if it's not already in the target tiler
         if window not in currentTilers[i].windows:
 
             currentTilers[i].windows.append(window)
+
 
     ###
     #Hotkey handlers
@@ -291,16 +391,7 @@ class Controller(object):
     def handler_alt_shift_C(self):
         "Handles alt+shift+C, closes the current window"
 
-        window = pwt.utilities.focused_window()
-
-        pwt.utilities.close(window)
-
-    def handler_alt_shift_V(self):
-        "Handles alt+shift+V, minimizes the current window"
-
-        window = pwt.utilities.focused_window()
-
-        pwt.utilities.minimize(window)
+        Window.focused_window().close()
 
     def handler_alt_one(self):
         "Handles alt+1, switches workspace"
@@ -370,7 +461,7 @@ class Controller(object):
 
         if self.currentWorkspace != 0:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -381,7 +472,7 @@ class Controller(object):
 
         if self.currentWorkspace != 1:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -392,7 +483,7 @@ class Controller(object):
 
         if self.currentWorkspace != 2:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -403,7 +494,7 @@ class Controller(object):
 
         if self.currentWorkspace != 3:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -414,7 +505,7 @@ class Controller(object):
 
         if self.currentWorkspace != 4:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -425,7 +516,7 @@ class Controller(object):
 
         if self.currentWorkspace != 5:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -436,7 +527,7 @@ class Controller(object):
 
         if self.currentWorkspace != 6:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -447,7 +538,7 @@ class Controller(object):
 
         if self.currentWorkspace != 7:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -458,7 +549,7 @@ class Controller(object):
 
         if self.currentWorkspace != 8:
 
-            window = pwt.utilities.focused_window() 
+            window = Window.focused_window() 
 
             if window:
 
@@ -481,11 +572,11 @@ class Controller(object):
             if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
 
                 #Focus the first window in the current workspace of the next monitor in the monitorTiler dict
-                pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+                self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0].focus()
 
         else:
 
-            pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
+            self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0].focus()
 
     def handler_alt_U(self):
         "Handles alt+F, changes focus to the previous monitor"
@@ -504,15 +595,15 @@ class Controller(object):
             if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
 
                 #Focus the first window in the current workspace of the previous monitor in the monitorTiler dict
-                pwt.utilities.focus(self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0])
+                self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0].focus()
 
         else:
 
-            pwt.utilities.focus(self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0])
+            self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0].focus()
 
     def handler_alt_shift_I(self):
 
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
         monitor = pwt.utilities.current_monitor()
         monitors = list(self.monitorTilers.keys())
 
@@ -537,11 +628,11 @@ class Controller(object):
                 targetTiler.windows.append(window)
                 targetTiler.tile_windows()
 
-            pwt.utilities.focus(window)
+            window.focus()
 
     def handler_alt_shift_U(self):
 
-        window = pwt.utilities.focused_window()
+        window = Window.focused_window()
         monitor = pwt.utilities.current_monitor()
         monitors = list(self.monitorTilers.keys())
 
@@ -566,11 +657,23 @@ class Controller(object):
                 targetTiler.windows.append(window)
                 targetTiler.tile_windows()
 
-            pwt.utilities.focus(window)
+            window.focus()
 
     def handler_alt_shift_D(self):
 
-        pwt.utilities.undecorate(pwt.utilities.focused_window())
+        window = Window.focused_window()
+
+        if window:
+
+            if window.has_decorations():
+
+                window.undecorate()
+
+            else:
+
+                window.decorate()
+
+            window.update()
 
     def handler_alt_shift_Q(self):
         "Handles alt+shift+Q, quits the listening"

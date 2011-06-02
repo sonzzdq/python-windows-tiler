@@ -1,6 +1,8 @@
 import win32gui
 import win32api
 
+from pwt.window import Window
+
 from win32con import GW_OWNER
 from win32con import GWL_STYLE
 from win32con import WS_VISIBLE
@@ -17,25 +19,26 @@ class WindowCaller(object):
 
         win32gui.EnumWindows(self.callback, self.windows)
 
-    def callback (self, window, resultList):
+    def callback (self, hwnd, resultList):
         "Callback function for EnumWindows"
 
-        #Go through numerous checks to see if the window is in the taskbar
-        if win32gui.IsWindowVisible(window):
+        #Go through numerous checks to see if the hwnd is in the taskbar
+        if win32gui.IsWindowVisible(hwnd):
 
-            if not win32gui.GetWindow(window, GW_OWNER):
+            if not win32gui.GetWindow(hwnd, GW_OWNER):
 
-                value = win32gui.GetWindowLong(window, GWL_STYLE)
+                value = win32gui.GetWindowLong(hwnd, GWL_STYLE)
 
                 if value & WS_EX_APPWINDOW:
 
                     if value & WS_EX_CONTROLPARENT:
 
-                        if win32gui.GetWindowPlacement(window)[1] == SW_SHOWNORMAL:
+                        if win32gui.GetWindowPlacement(hwnd)[1] == SW_SHOWNORMAL:
             
-                            if window not in self.floatList:
+                            if hwnd not in self.floatList:
 
-                                resultList.append(window)
+                                print(hwnd)
+                                resultList.append(Window(hwnd))
                                 return True
 
     def windows_for_monitor(self, monitor):
@@ -45,8 +48,19 @@ class WindowCaller(object):
 
         for window in self.windows:
 
-            if win32api.MonitorFromWindow(window) == monitor:
+            if win32api.MonitorFromWindow(window.hwnd) == monitor:
 
+                window.undecorate()
                 monitorWindows.append(window)
             
         return monitorWindows
+
+    def decorate_windows(self):
+        "Reset all windows, adding decoration"
+
+        win32gui.EnumWindows(self.callback, self.windows)
+
+        for window in self.windows:
+
+            window.decorate()
+            window.update()
