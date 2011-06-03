@@ -177,49 +177,6 @@ class Controller(object):
     #Commands
     ###
 
-    def handle_add_event(self, window):
-        "Triggered when a window has to be added"
-
-        #Check for the floating list
-        if window.classname() not in self.FLOATS:
-
-            tiler = self.current_tiler()
-
-            #if it should be tiled and isn't already tiled
-            if window.should_tile() and window not in tiler.windows:
-                
-                #undecorate and update the window
-                window.undecorate()
-                window.update()
-
-                #append and tile retile the windows
-                tiler.windows.append(window)
-                tiler.tile_windows()
-
-    def handle_remove_event(self, window):
-        "Triggered when a window needs to be removed"
-
-        tiler = self.current_tiler()
-
-        if window in tiler.windows:
-
-            tiler.windows.remove(window)
-            tiler.tile_windows()
-
-
-    def decorate_all_tiledwindows(self):
-        "Decorates all windows in the tiler's memory"
-
-        for tilers in self.monitorTilers.values():
-
-            for tiler in tilers:
-
-                for window in tiler.windows:
-
-                    window.decorate()
-                    window.update()
-                    window.show()
-
     def start(self):
         "start the listeners with a safety try/finally to unregister keys and kill the icon"
 
@@ -271,6 +228,49 @@ class Controller(object):
 
             #Destroy window
             Window.destroy(self.hwnd)
+
+    def handle_add_event(self, window):
+        "Triggered when a window has to be added"
+
+        #Check for the floating list
+        if window.classname() not in self.FLOATS:
+
+            tiler = self.current_tiler()
+
+            #if it should be tiled and isn't already tiled
+            if window.should_tile() and window not in tiler.windows:
+                
+                #undecorate and update the window
+                window.undecorate()
+                window.update()
+
+                #append and tile retile the windows
+                tiler.windows.append(window)
+                tiler.tile_windows()
+
+    def handle_remove_event(self, window):
+        "Triggered when a window needs to be removed"
+
+        tiler = self.current_tiler()
+
+        if window in tiler.windows:
+
+            tiler.windows.remove(window)
+            tiler.tile_windows()
+
+    def decorate_all_tiledwindows(self):
+        "Decorates all windows in the tiler's memory"
+
+        for tilers in self.monitorTilers.values():
+
+            for tiler in tilers:
+
+                for window in tiler.windows:
+
+                    window.decorate()
+                    window.update()
+                    window.show()
+
 
     def initial_tile(self):
         "Controls and handles all the windows on the screen, merging the changes with the tilers"
@@ -346,7 +346,6 @@ class Controller(object):
             if window not in currentTilers[i].windows:
 
                 currentTilers[i].windows.append(window)
-
 
     ###
     #Hotkey handlers
@@ -668,7 +667,7 @@ class Controller(object):
                 currentTiler.windows.remove(window)
                 currentTiler.tile_windows()
 
-            if window not in targetTiler.windows:
+            elif window not in targetTiler.windows:
 
                 targetTiler.windows.append(window)
                 targetTiler.tile_windows()
