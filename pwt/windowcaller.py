@@ -35,7 +35,7 @@ class WindowCaller(object):
 
                         if win32gui.GetWindowPlacement(hwnd)[1] == SW_SHOWNORMAL:
             
-                            if hwnd not in self.floatList:
+                            if win32gui.GetClassName(hwnd) not in self.floatList:
 
                                 print(hwnd)
                                 resultList.append(Window(hwnd))
@@ -51,16 +51,8 @@ class WindowCaller(object):
             if win32api.MonitorFromWindow(window.hwnd) == monitor:
 
                 window.undecorate()
+                window.update()
+
                 monitorWindows.append(window)
             
         return monitorWindows
-
-    def decorate_windows(self):
-        "Reset all windows, adding decoration"
-
-        win32gui.EnumWindows(self.callback, self.windows)
-
-        for window in self.windows:
-
-            window.decorate()
-            window.update()

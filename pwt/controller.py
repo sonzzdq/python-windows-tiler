@@ -14,6 +14,7 @@ import time
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
+from win32con import VK_END
 
 ##HOTKEY EVENTS
 from win32con import WM_HOTKEY
@@ -21,7 +22,6 @@ from win32con import WM_HOTKEY
 ##TILE EVENTS
 from win32con import HSHELL_WINDOWCREATED
 from win32con import HSHELL_WINDOWDESTROYED
-from win32con import HSHELL_REDRAW
 
 class Controller(object):
 
@@ -36,8 +36,8 @@ class Controller(object):
 
         #create <<classname>> based ignorelist
         self.FLOATS = (#This list may hurt performance if it's huge
-                #"progman"			#example
-                #, "progman"		#example
+                "#32770"#Task maanager
+               ,"progman"#Desktop
                 )
 
         #the events that trigger the removal of a window
@@ -47,7 +47,7 @@ class Controller(object):
 
         #the events that trigger an additional window
         self.ADD_EVENTS = (HSHELL_WINDOWCREATED
-                ,HSHELL_REDRAW
+                ,#placeholder
                 )
 
         #list the HOTKEYS that should be listened to
@@ -85,7 +85,7 @@ class Controller(object):
                 , 32: (MOD_ALT + MOD_SHIFT, ord("I"))
                 , 33: (MOD_ALT + MOD_SHIFT, ord("U"))
                 , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
-                , 35: (MOD_ALT + MOD_SHIFT, ord("Q"))
+                , 35: (MOD_ALT + MOD_SHIFT, VK_END)
                 }
 
         #list the corresponding self.handlers 
@@ -123,7 +123,7 @@ class Controller(object):
                 , 32:  self.handler_alt_shift_I
                 , 33:  self.handler_alt_shift_U
                 , 34:  self.handler_alt_shift_D
-                , 35:  self.handler_alt_shift_Q
+                , 35:  self.handler_alt_shift_end
                 }
 
         #Create a dictionary mapping 9 tilers per monitor
@@ -177,11 +177,54 @@ class Controller(object):
     #Commands
     ###
 
+    def handle_add_event(self, window):
+        "Triggered when a window has to be added"
+
+        #Check for the floating list
+        if window.classname() not in self.FLOATS:
+
+            tiler = self.current_tiler()
+
+            #if it should be tiled and isn't already tiled
+            if window.should_tile() and window not in tiler.windows:
+                
+                #undecorate and update the window
+                window.undecorate()
+                window.update()
+
+                #append and tile retile the windows
+                tiler.windows.append(window)
+                tiler.tile_windows()
+
+    def handle_remove_event(self, window):
+        "Triggered when a window needs to be removed"
+
+        tiler = self.current_tiler()
+
+        if window in tiler.windows:
+
+            tiler.windows.remove(window)
+            tiler.tile_windows()
+
+
+    def decorate_all_tiledwindows(self):
+        "Decorates all windows in the tiler's memory"
+
+        for tilers in self.monitorTilers.values():
+
+            for tiler in tilers:
+
+                for window in tiler.windows:
+
+                    window.decorate()
+                    window.update()
+                    window.show()
+
     def start(self):
         "start the listeners with a safety try/finally to unregister keys and kill the icon"
 
         #Do an initial lookup of all the windows and tile accordingly
-        self.control_and_handle_windows()
+        self.initial_tile()
 
         try:
 
@@ -200,34 +243,13 @@ class Controller(object):
                 #if lparam is a tile event
                 elif message[1][2] in self.ADD_EVENTS:
 
-                    hwnd = message[1][3]
+                    self.handle_add_event(Window(message[1][3]))
                     
-                    if hwnd not in self.FLOATS:
-
-                        window = Window(hwnd)
-                        tiler = self.current_tiler()
-
-                        if window.should_tile() and window not in tiler.windows:
-                            
-                            window.undecorate()
-
-                            tiler.windows.append(window)
-
-                            tiler.tile_windows()
-
+                #if lparam is a remove event
                 elif message[1][2] in self.REMOVE_EVENTS:
 
-                    hwnd = message[1][3]
+                    self.handle_remove_event(Window(message[1][3]))
 
-                    window = Window(hwnd)
-                    tiler = self.current_tiler()
-
-                    if window in tiler.windows:
-
-                        tiler.windows.remove(window)
-
-                        tiler.tile_windows()
-    
                 if self.stop:
 
                     break
@@ -242,14 +264,7 @@ class Controller(object):
             pwt.utilities.unregister_shellhook(self.hwnd)
 
             #Decorate windows
-            for tilers in self.monitorTilers.values():
-
-                for tiler in tilers:
-
-                    for window in tiler.windows:
-
-                        window.decorate()
-                        window.update()
+            self.decorate_all_tiledwindows()
 
             #Remove systrayicon
             self.systrayicon.destroy()
@@ -257,7 +272,7 @@ class Controller(object):
             #Destroy window
             Window.destroy(self.hwnd)
 
-    def control_and_handle_windows(self):
+    def initial_tile(self):
         "Controls and handles all the windows on the screen, merging the changes with the tilers"
 
         #Create a caller
@@ -601,6 +616,7 @@ class Controller(object):
             self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0].focus()
 
     def handler_alt_shift_I(self):
+        "Handles alt+shft_I switches window to the next monitor"
 
         window = Window.focused_window()
         monitor = pwt.utilities.current_monitor()
@@ -630,6 +646,7 @@ class Controller(object):
             window.focus()
 
     def handler_alt_shift_U(self):
+        "Handles alt+shft_I switches window to the previous monitor"
 
         window = Window.focused_window()
         monitor = pwt.utilities.current_monitor()
@@ -659,6 +676,7 @@ class Controller(object):
             window.focus()
 
     def handler_alt_shift_D(self):
+        "Handles alt+shift+D, toggles decorations"
 
         window = Window.focused_window()
 
@@ -676,8 +694,8 @@ class Controller(object):
 
                 window.update()
 
-    def handler_alt_shift_Q(self):
-        "Handles alt+shift+Q, quits the listening"
+    def handler_alt_shift_end(self):
+        "Handles alt+shift+end, quits the listening"
         
         #stop the polling
         self.stop = True

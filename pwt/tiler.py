@@ -79,17 +79,17 @@ class Tiler(object):
 
                 if i in range(self.masterareaSize):
 
-                    windowPosition = (self.left, self.top + i * heightMaster, width, heightMaster)
+                    windowPosition = (self.left, self.top + i * heightMaster, self.left + width, self.top + (i + 1) * heightMaster)
 
                 else:
 
-                    windowPosition = (self.left + width, self.top + (i - self.masterareaSize) * height, self.width - width, height)
+                    windowPosition = (self.left + width, self.top + (i - self.masterareaSize) * height, self.left + self.width, self.top + (i - self.masterareaSize + 1) * height)
 
                 window.position(windowPosition)
 
         elif len(self.windows) == 1:
 
-            self.windows[0].position((self.left, self.top, self.width, self.height))
+            self.windows[0].position((self.left, self.top, self.left + self.width, self.top + self.height))
 
     ############################################
     ### Start of the commands
