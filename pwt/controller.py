@@ -14,7 +14,7 @@ import time
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
-from win32con import VK_END
+from win32con import VK_DELETE
 
 ##HOTKEY EVENTS
 from win32con import WM_HOTKEY
@@ -85,7 +85,7 @@ class Controller(object):
                 , 32: (MOD_ALT + MOD_SHIFT, ord("I"))
                 , 33: (MOD_ALT + MOD_SHIFT, ord("U"))
                 , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
-                , 35: (MOD_ALT + MOD_SHIFT, VK_END)
+                , 35: (MOD_ALT + MOD_SHIFT, VK_DELETE)
                 }
 
         #list the corresponding self.handlers 
@@ -123,7 +123,7 @@ class Controller(object):
                 , 32:  self.handler_alt_shift_I
                 , 33:  self.handler_alt_shift_U
                 , 34:  self.handler_alt_shift_D
-                , 35:  self.handler_alt_shift_end
+                , 35:  self.handler_alt_shift_delete
                 }
 
         #Create a dictionary mapping 9 tilers per monitor
@@ -694,7 +694,7 @@ class Controller(object):
 
                 window.update()
 
-    def handler_alt_shift_end(self):
+    def handler_alt_shift_delete(self):
         "Handles alt+shift+end, quits the listening"
         
         #stop the polling
