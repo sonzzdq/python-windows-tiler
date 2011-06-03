@@ -48,10 +48,8 @@ class Window(object):
                 if value & WS_EX_APPWINDOW:
 
                     if value & WS_EX_CONTROLPARENT:
-            
-                        if win32gui.GetWindowPlacement(self.hwnd)[1] == SW_SHOWNORMAL:
 
-                            return True
+                        return True
         return False
 
     def has_decorations(self):

@@ -1,4 +1,5 @@
 from pwt.window import Window
+from pwt.layout import Layout
 
 class Tiler(object):
 
@@ -17,60 +18,14 @@ class Tiler(object):
 
         self.windows = []
 
+        self.currentLayout = 0
+        self.layouts = []
+        self.layouts.append(Layout("Vertical", self.vertical_tile))
+
     def tile_windows(self):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
 
-        if len(self.windows) > 1:
-
-            #set the appropriate height depending on the amount of windows compared to the mastersize
-            if self.masterareaSize == len(self.windows):
-
-                height = self.height
-
-            else:
-
-                height = self.height // (len(self.windows) - self.masterareaSize)
-
-            #set the appropriate height and width for the tile side
-            if self.masterareaSize >= len(self.windows):
-
-                heightMaster = self.height // len(self.windows)
-                width = self.width
-
-            else:
-
-                heightMaster = self.height // self.masterareaSize
-                width = self.masterareaWidth
-
-            for i, window in enumerate(self.windows):
-
-                if i in range(self.masterareaSize):
-
-                    windowLeft = self.left
-                    windowTop = self.top + i * heightMaster
-
-                    windowWidth = self.left + width
-                    windowHeight = self.top + (i + 1) * heightMaster
-
-                else:
-
-                    windowLeft = self.left + width
-                    windowTop = self.top + (i - self.masterareaSize) * height
-
-                    windowWidth = self.left + self.width
-                    windowHeight = self.top + (i - self.masterareaSize + 1) * height
-
-                window.position((windowLeft, windowTop, windowWidth, windowHeight))
-
-        elif len(self.windows) == 1:
-
-            windowLeft = self.left 
-            windowTop = self.top
-
-            windowWidth = self.left + self.width
-            windowHeight = self.top + self.height 
-
-            self.windows[0].position((windowLeft, windowTop, windowWidth, windowHeight))
+        self.layouts[self.currentLayout].execute()
 
     ############################################
     ### Start of the commands
@@ -238,4 +193,65 @@ class Tiler(object):
 
             print ("masterarea size += 1")
             self.tile_windows()
-   
+
+
+    ###
+    # TILE LAYOUTS
+    ###
+
+    def vertical_tile(self):
+        "Tiles the windows vertical"
+
+        if len(self.windows) > 1:
+
+            #set the appropriate height depending on the amount of windows compared to the mastersize
+            if self.masterareaSize == len(self.windows):
+
+                height = self.height
+
+            else:
+
+                height = self.height // (len(self.windows) - self.masterareaSize)
+
+            #set the appropriate height and width for the tile side
+            if self.masterareaSize >= len(self.windows):
+
+                heightMaster = self.height // len(self.windows)
+                width = self.width
+
+            else:
+
+                heightMaster = self.height // self.masterareaSize
+                width = self.masterareaWidth
+
+            for i, window in enumerate(self.windows):
+
+                if i in range(self.masterareaSize):
+
+                    windowLeft = self.left
+                    windowTop = self.top + i * heightMaster
+
+                    windowWidth = self.left + width
+                    windowHeight = self.top + (i + 1) * heightMaster
+
+                else:
+
+                    windowLeft = self.left + width
+                    windowTop = self.top + (i - self.masterareaSize) * height
+
+                    windowWidth = self.left + self.width
+                    windowHeight = self.top + (i - self.masterareaSize + 1) * height
+
+                window.position((windowLeft, windowTop, windowWidth, windowHeight))
+
+        elif len(self.windows) == 1:
+
+            windowLeft = self.left 
+            windowTop = self.top
+
+            windowWidth = self.left + self.width
+            windowHeight = self.top + self.height 
+
+            self.windows[0].position((windowLeft, windowTop, windowWidth, windowHeight))
+
+
