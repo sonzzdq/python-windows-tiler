@@ -17,39 +17,6 @@ class Tiler(object):
 
         self.windows = []
 
-    def merge_windows(self, newWindows):
-        "Enumerateswindows, when the amount of windows changes it calls the handler, passing the current windows"
-
-        reTile = False
-        currentAmount = len(self.windows)
-        newAmount = len(newWindows)
-
-        #check for window changement
-        if newAmount > currentAmount:
-
-            for window in newWindows:
-
-                if window not in self.windows:
-
-                    self.windows.append(window)
-                    reTile = True
-                    print ("Add handle: ", window)
-
-        elif currentAmount > newAmount:
-
-            for window in self.windows:
-
-                if window not in newWindows:
-
-                    self.windows.remove(window)
-                    reTile = True
-                    print ("Remove handle: ", window)
-
-        if reTile:
-
-            #call the handler
-            self.tile_windows()
-
     def tile_windows(self):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
 
@@ -79,17 +46,31 @@ class Tiler(object):
 
                 if i in range(self.masterareaSize):
 
-                    windowPosition = (self.left, self.top + i * heightMaster, self.left + width, self.top + (i + 1) * heightMaster)
+                    windowLeft = self.left
+                    windowTop = self.top + i * heightMaster
+
+                    windowWidth = self.left + width
+                    windowHeight = self.top + (i + 1) * heightMaster
 
                 else:
 
-                    windowPosition = (self.left + width, self.top + (i - self.masterareaSize) * height, self.left + self.width, self.top + (i - self.masterareaSize + 1) * height)
+                    windowLeft = self.left + width
+                    windowTop = self.top + (i - self.masterareaSize) * height
 
-                window.position(windowPosition)
+                    windowWidth = self.left + self.width
+                    windowHeight = self.top + (i - self.masterareaSize + 1) * height
+
+                window.position((windowLeft, windowTop, windowWidth, windowHeight))
 
         elif len(self.windows) == 1:
 
-            self.windows[0].position((self.left, self.top, self.left + self.width, self.top + self.height))
+            windowLeft = self.left 
+            windowTop = self.top
+
+            windowWidth = self.left + self.width
+            windowHeight = self.top + self.height 
+
+            self.windows[0].position((windowLeft, windowTop, windowWidth, windowHeight))
 
     ############################################
     ### Start of the commands
