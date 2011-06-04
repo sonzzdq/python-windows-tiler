@@ -128,7 +128,7 @@ class Controller(object):
 
         #Create a dictionary mapping 9 tilers per monitor
         self.monitorTilers = {}
-        self.currentWorkspace = 0
+        self.workspace = 0
 
         #For each monitor, create a monitorTiler dict item containing monitor:tilerList
         for monitorTuple in pwt.utilities.display_monitors(): 
@@ -137,7 +137,8 @@ class Controller(object):
 
             for i in range(9):
 
-                tilers.append(Tiler(pwt.utilities.get_monitor_workrectangle(monitorTuple[0])))
+                monitorWorkArea = pwt.utilities.get_monitor_workrectangle(monitorTuple[0])
+                tilers.append(Tiler(monitorWorkArea))
 
             self.monitorTilers[int(monitorTuple[0])] = tilers 
 
@@ -161,12 +162,12 @@ class Controller(object):
     def icon(self):
         "Return the appropriate icon"
 
-        return self.ICONFOLDER + str(self.currentWorkspace + 1) + ".ico"
+        return self.ICONFOLDER + str(self.workspace + 1) + ".ico"
 
     def current_tiler(self):
         "Return current tiler"
 
-        return self.current_tilers()[self.currentWorkspace]
+        return self.current_tilers()[self.workspace]
 
     def current_tilers(self):
         "Return current tilers"
@@ -281,9 +282,9 @@ class Controller(object):
         #Do a tile for each monitor
         for monitor, tilers in self.monitorTilers.items():
 
-            tilers[self.currentWorkspace].windows = self.windowcaller.windows_for_monitor(monitor)
+            tilers[self.workspace].windows = self.windowcaller.windows_for_monitor(monitor)
 
-            tilers[self.currentWorkspace].tile_windows()
+            tilers[self.workspace].tile_windows()
 
     def switch_workspace(self, i):
         "Switch the current workspace into workspace i"
@@ -294,7 +295,7 @@ class Controller(object):
         #Make a set of all the windows in the current workspace
         for tilers in self.monitorTilers.values():
 
-            allCurrentWindows.extend(tilers[self.currentWorkspace].windows)
+            allCurrentWindows.extend(tilers[self.workspace].windows)
 
         #Make a set of all the windows in the new workspace
         for tilers in self.monitorTilers.values():
@@ -317,7 +318,7 @@ class Controller(object):
 
             tilers[i].tile_windows()
 
-        self.currentWorkspace = i
+        self.workspace = i
         self.systrayicon.refresh_icon(self.icon())
 
         window = Window.window_under_cursor()
@@ -409,70 +410,70 @@ class Controller(object):
     def handler_alt_one(self):
         "Handles alt+1, switches workspace"
         
-        if self.currentWorkspace != 0:
+        if self.workspace != 0:
 
             self.switch_workspace(0)
 
     def handler_alt_two(self):
         "Handles alt+2, switches workspace"
         
-        if self.currentWorkspace != 1:
+        if self.workspace != 1:
 
             self.switch_workspace(1)
 
     def handler_alt_three(self):
         "Handles alt+3, switches workspace"
         
-        if self.currentWorkspace != 2:
+        if self.workspace != 2:
 
             self.switch_workspace(2)
 
     def handler_alt_four(self):
         "Handles alt+4, switches workspace"
         
-        if self.currentWorkspace != 3:
+        if self.workspace != 3:
 
             self.switch_workspace(3)
 
     def handler_alt_five(self):
         "Handles alt+5, switches workspace"
         
-        if self.currentWorkspace != 4:
+        if self.workspace != 4:
 
             self.switch_workspace(4)
 
     def handler_alt_six(self):
         "Handles alt+6, switches workspace"
         
-        if self.currentWorkspace != 5:
+        if self.workspace != 5:
 
             self.switch_workspace(5)
 
     def handler_alt_seven(self):
         "Handles alt+7, switches workspace"
         
-        if self.currentWorkspace != 6:
+        if self.workspace != 6:
 
             self.switch_workspace(6)
 
     def handler_alt_eight(self):
         "Handles alt+8, switches workspace"
         
-        if self.currentWorkspace != 7:
+        if self.workspace != 7:
 
             self.switch_workspace(7)
 
     def handler_alt_nine(self):
         "Handles alt+9, switches workspace"
         
-        if self.currentWorkspace != 8:
+        if self.workspace != 8:
 
             self.switch_workspace(8)
 
     def handler_alt_shift_one(self):
         "Handles alt+shift+1, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 0:
+        if self.workspace != 0:
 
             window = Window.focused_window() 
 
@@ -483,7 +484,7 @@ class Controller(object):
     def handler_alt_shift_two(self):
         "Handles alt+shift+2, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 1:
+        if self.workspace != 1:
 
             window = Window.focused_window() 
 
@@ -494,7 +495,7 @@ class Controller(object):
     def handler_alt_shift_three(self):
         "Handles alt+shift+3, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 2:
+        if self.workspace != 2:
 
             window = Window.focused_window() 
 
@@ -505,7 +506,7 @@ class Controller(object):
     def handler_alt_shift_four(self):
         "Handles alt+shift+4, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 3:
+        if self.workspace != 3:
 
             window = Window.focused_window() 
 
@@ -516,7 +517,7 @@ class Controller(object):
     def handler_alt_shift_five(self):
         "Handles alt+shift+5, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 4:
+        if self.workspace != 4:
 
             window = Window.focused_window() 
 
@@ -527,7 +528,7 @@ class Controller(object):
     def handler_alt_shift_six(self):
         "Handles alt+shift+6, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 5:
+        if self.workspace != 5:
 
             window = Window.focused_window() 
 
@@ -538,7 +539,7 @@ class Controller(object):
     def handler_alt_shift_seven(self):
         "Handles alt+shift+7, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 6:
+        if self.workspace != 6:
 
             window = Window.focused_window() 
 
@@ -549,7 +550,7 @@ class Controller(object):
     def handler_alt_shift_eight(self):
         "Handles alt+shift+8, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 7:
+        if self.workspace != 7:
 
             window = Window.focused_window() 
 
@@ -560,7 +561,7 @@ class Controller(object):
     def handler_alt_shift_nine(self):
         "Handles alt+shift+9, sends window to appropriate tiler"
 
-        if self.currentWorkspace != 8:
+        if self.workspace != 8:
 
             window = Window.focused_window() 
 
@@ -582,14 +583,14 @@ class Controller(object):
 
                     i = 0
 
-            if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
+            if len(self.monitorTilers[monitors[i]][self.workspace].windows):
 
                 #Focus the first window in the current workspace of the next monitor in the monitorTiler dict
-                self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0].focus()
+                self.monitorTilers[monitors[i]][self.workspace].windows[0].focus()
 
         else:
 
-            self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0].focus()
+            self.monitorTilers[monitors[0]][self.workspace].windows[0].focus()
 
     def handler_alt_U(self):
         "Handles alt+F, changes focus to the previous monitor"
@@ -605,14 +606,14 @@ class Controller(object):
 
                     i = len(monitors) - 1
 
-            if len(self.monitorTilers[monitors[i]][self.currentWorkspace].windows):
+            if len(self.monitorTilers[monitors[i]][self.workspace].windows):
 
                 #Focus the first window in the current workspace of the previous monitor in the monitorTiler dict
-                self.monitorTilers[monitors[i]][self.currentWorkspace].windows[0].focus()
+                self.monitorTilers[monitors[i]][self.workspace].windows[0].focus()
 
         else:
 
-            self.monitorTilers[monitors[0]][self.currentWorkspace].windows[0].focus()
+            self.monitorTilers[monitors[0]][self.workspace].windows[0].focus()
 
     def handler_alt_shift_I(self):
         "Handles alt+shft_I switches window to the next monitor"
@@ -629,8 +630,8 @@ class Controller(object):
 
                     i = 0
 
-            currentTiler = self.monitorTilers[monitor][self.currentWorkspace]
-            targetTiler = self.monitorTilers[monitors[i]][self.currentWorkspace]
+            currentTiler = self.monitorTilers[monitor][self.workspace]
+            targetTiler = self.monitorTilers[monitors[i]][self.workspace]
             
             if window in currentTiler.windows:
 
@@ -659,8 +660,8 @@ class Controller(object):
 
                     i = len(monitors) - 1
 
-            currentTiler = self.monitorTilers[monitor][self.currentWorkspace]
-            targetTiler = self.monitorTilers[monitors[i]][self.currentWorkspace]
+            currentTiler = self.monitorTilers[monitor][self.workspace]
+            targetTiler = self.monitorTilers[monitors[i]][self.workspace]
             
             if window in currentTiler.windows:
 
