@@ -146,7 +146,7 @@ class Controller(object):
         self.systrayicon = SysTrayIcon(self.icon(), self.NAME, self.WINDOWCLASSNAME)
 
         #Create a dummy window to register hooks to 
-        self.hwnd = Window.create_dummywindow(self.WINDOWCLASSNAME, self.NAME, pwt.utilities.module_handle()) 
+        self.hwnd = self.systrayicon.hwnd
         
         #Register a shellhook for the window
         pwt.utilities.register_shellhook(self.hwnd) 

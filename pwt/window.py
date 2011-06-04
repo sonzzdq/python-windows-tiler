@@ -160,9 +160,3 @@ class Window(object):
         "Grabs the window under the cursor"
 
         return Window(win32gui.WindowFromPoint(win32api.GetCursorPos()))
-
-    @staticmethod
-    def create_dummywindow(classname, name, hInstance):
-        "Creates a window and returns the hwnd"
-
-        return win32gui.CreateWindowEx(0, classname, name, 0, 0, 0, 0, 0, HWND_MESSAGE, None, hInstance, None)
