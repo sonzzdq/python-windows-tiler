@@ -137,13 +137,15 @@ class Controller(object):
 
             for i in range(9):
 
-                monitorWorkArea = pwt.utilities.get_monitor_workrectangle(monitorTuple[0])
+                monitorWorkArea = pwt.utilities.monitor_workrectangle(monitorTuple[0])
                 tilers.append(Tiler(monitorWorkArea, self.FLOATS))
 
             self.monitorTilers[int(monitorTuple[0])] = tilers 
 
         #Create systrayicon
-        self.systrayicon = SysTrayIcon(self.icon(), self.NAME, self.WINDOWCLASSNAME)
+        self.systrayicon = SysTrayIcon(self.icon()
+                ,self.NAME
+                ,self.WINDOWCLASSNAME)
 
         #Create a dummy window to register hooks to 
         self.hwnd = self.systrayicon.hwnd
@@ -152,7 +154,9 @@ class Controller(object):
         pwt.utilities.register_shellhook(self.hwnd) 
                 
         #Create the hotkeycontroller with the hotkeys, handlers and window
-        self.hotkeycontroller = HotkeyController(self.HOTKEYS, self.HOTKEYHANDLERS, self.hwnd)
+        self.hotkeycontroller = HotkeyController(self.HOTKEYS
+                ,self.HOTKEYHANDLERS
+                ,self.hwnd)
 
         #Register hotkeys
         self.hotkeycontroller.register_hotkeys()
@@ -191,7 +195,6 @@ class Controller(object):
 
             while message:
 
-                print(message)
                 #if message is WM_HOTKEY
                 if message[1][1] == WM_HOTKEY:
 
@@ -299,7 +302,6 @@ class Controller(object):
 
             allNewWindows.extend(tilers[i].windows)
 
-        print(type(set(allNewWindows) - set(allCurrentWindows)))
         #Hide all windows that aren't in the new workspace
         for window in set(allCurrentWindows) - set(allNewWindows):
 
@@ -335,6 +337,7 @@ class Controller(object):
 
             window.hide()
 
+            #Remove window if it's in the tiler
             if window in currentTiler.windows:
 
                 currentTiler.windows.remove(window)

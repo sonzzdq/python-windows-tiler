@@ -38,16 +38,16 @@ class SysTrayIcon(object):
         # Create the Window.
         style = win32con.WS_OVERLAPPED | win32con.WS_SYSMENU
         self.hwnd = win32gui.CreateWindow(classAtom,
-                                          self.window_class_name,
-                                          style,
-                                          0,
-                                          0,
-                                          win32con.CW_USEDEFAULT,
-                                          win32con.CW_USEDEFAULT,
-                                          0,
-                                          0,
-                                          hinst,
-                                          None)
+                self.window_class_name,
+                style,
+                0,
+                0,
+                win32con.CW_USEDEFAULT,
+                win32con.CW_USEDEFAULT,
+                0,
+                0,
+                hinst,
+                None)
 
         win32gui.UpdateWindow(self.hwnd)
 
@@ -67,11 +67,11 @@ class SysTrayIcon(object):
 
             icon_flags = win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE
             hicon = win32gui.LoadImage(hinst,
-                                       self.icon,
-                                       win32con.IMAGE_ICON,
-                                       0,
-                                       0,
-                                       icon_flags)
+                    self.icon,
+                    win32con.IMAGE_ICON,
+                    0,
+                    0,
+                    icon_flags)
 
         else:
 
@@ -87,11 +87,11 @@ class SysTrayIcon(object):
             message = win32gui.NIM_ADD
 
         self.notify_id = (self.hwnd,
-                          0,
-                          win32gui.NIF_ICON | win32gui.NIF_MESSAGE | win32gui.NIF_TIP,
-                          win32con.WM_USER+20,
-                          hicon,
-                          self.hover_text)
+                0,
+                win32gui.NIF_ICON | win32gui.NIF_MESSAGE | win32gui.NIF_TIP,
+                win32con.WM_USER+20,
+                hicon,
+                self.hover_text)
 
         win32gui.Shell_NotifyIcon(message, self.notify_id)
 

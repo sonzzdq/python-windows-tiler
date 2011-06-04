@@ -69,11 +69,12 @@ class Window(object):
         try:
 
             windowPlacement = win32gui.GetWindowPlacement(self.hwnd)
-            win32gui.SetWindowPlacement(self.hwnd, (windowPlacement[0]
-                , SW_SHOWNORMAL
-                , windowPlacement[2]
-                , windowPlacement[3]
-                , windowPosition))
+            win32gui.SetWindowPlacement(self.hwnd
+                    ,(windowPlacement[0]
+                        ,SW_SHOWNORMAL
+                        ,windowPlacement[2]
+                        ,windowPlacement[3]
+                        ,windowPosition))
 
         except win32gui.error:
 
@@ -134,12 +135,19 @@ class Window(object):
         "Moves cursor to the given window"
 
         rect = win32gui.GetWindowRect(self.hwnd)
-        win32api.SetCursorPos(((rect[2] + rect[0]) // 2, (rect[3] + rect[1]) // 2))
+        win32api.SetCursorPos((rect[2] + rect[0]) // 2
+            ,(rect[3] + rect[1]) // 2)
 
     def update(self):
         "Update the window"
 
-        win32gui.SetWindowPos(self.hwnd, 0, 0, 0, 0, 0, SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER)
+        win32gui.SetWindowPos(self.hwnd
+                ,0
+                ,0
+                ,0
+                ,0
+                ,0
+                ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER)
 
     def classname(self):
         "Returns the window's classname"

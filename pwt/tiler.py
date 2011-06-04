@@ -15,8 +15,8 @@ class Tiler(object):
         self.width = rectangle[2] - rectangle[0]
         self.height = rectangle[3] - rectangle[1]
 
-        self.masterareaWidth = self.width // 2
-        self.masterareaSize = 1
+        self.masterareaSize = self.width // 2
+        self.masterareaCount = 1
 
         self.windows = []
 
@@ -36,10 +36,10 @@ class Tiler(object):
     def decrease_masterarea_width(self):
         "Decreases the masterarea width by 100px, else windows might overlap into different monitors and cause problems"
 
-        if self.masterareaWidth >= 200:
+        if self.masterareaSize >= 200:
 
             #decrease master areaWidth 
-            self.masterareaWidth -= 100
+            self.masterareaSize -= 100
             print("master area -= 100")
 
             self.tile_windows()
@@ -47,10 +47,10 @@ class Tiler(object):
     def increase_masterarea_width(self):
         "Increases the masterarea width by 100px, else windows might overlap into different monitors and cause problems"
 
-        if self.width - self.masterareaWidth >= 200:
+        if self.width - self.masterareaSize >= 200:
 
             #increase master areaWidth 
-            self.masterareaWidth += 100
+            self.masterareaSize += 100
             print("master area += 100")
 
             self.tile_windows()
@@ -178,9 +178,9 @@ class Tiler(object):
         "Decreases the masterarea size by one"
 
         #decrease the masterarea size if it's possible
-        if self.masterareaSize > 1:
+        if self.masterareaCount > 1:
 
-            self.masterareaSize -= 1
+            self.masterareaCount -= 1
 
             print ("masterarea size -= 1")
             self.tile_windows()
@@ -189,9 +189,9 @@ class Tiler(object):
         "Decreases the masterarea size by one"
 
         #increase the masterarea size if it's possible
-        if self.masterareaSize < len(self.windows):
+        if self.masterareaCount < len(self.windows):
 
-            self.masterareaSize += 1
+            self.masterareaCount += 1
 
             print ("masterarea size += 1")
             self.tile_windows()
@@ -207,28 +207,28 @@ class Tiler(object):
         if len(self.windows) > 1:
 
             #set the appropriate height depending on the amount of windows compared to the mastersize
-            if self.masterareaSize == len(self.windows):
+            if self.masterareaCount == len(self.windows):
 
                 height = self.height
 
             else:
 
-                height = self.height // (len(self.windows) - self.masterareaSize)
+                height = self.height // (len(self.windows) - self.masterareaCount)
 
             #set the appropriate height and width for the tile side
-            if self.masterareaSize >= len(self.windows):
+            if self.masterareaCount >= len(self.windows):
 
                 heightMaster = self.height // len(self.windows)
                 width = self.width
 
             else:
 
-                heightMaster = self.height // self.masterareaSize
-                width = self.masterareaWidth
+                heightMaster = self.height // self.masterareaCount
+                width = self.masterareaSize
 
             for i, window in enumerate(self.windows):
 
-                if i in range(self.masterareaSize):
+                if i in range(self.masterareaCount):
 
                     windowLeft = self.left
                     windowTop = self.top + i * heightMaster
@@ -239,12 +239,15 @@ class Tiler(object):
                 else:
 
                     windowLeft = self.left + width
-                    windowTop = self.top + (i - self.masterareaSize) * height
+                    windowTop = self.top + (i - self.masterareaCount) * height
 
                     windowWidth = self.left + self.width
-                    windowHeight = self.top + (i - self.masterareaSize + 1) * height
+                    windowHeight = self.top + (i - self.masterareaCount + 1) * height
 
-                window.position((windowLeft, windowTop, windowWidth, windowHeight))
+                window.position((windowLeft
+                    ,windowTop
+                    ,windowWidth
+                    ,windowHeight))
 
         elif len(self.windows) == 1:
 
@@ -254,6 +257,7 @@ class Tiler(object):
             windowWidth = self.left + self.width
             windowHeight = self.top + self.height 
 
-            self.windows[0].position((windowLeft, windowTop, windowWidth, windowHeight))
-
-
+            self.windows[0].position((windowLeft
+                ,windowTop
+                ,windowWidth
+                ,windowHeight))

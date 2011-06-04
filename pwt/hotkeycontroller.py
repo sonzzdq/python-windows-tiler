@@ -16,7 +16,7 @@ class HotkeyController(object):
 
         for i, (modifiers, vk) in self.hotkeys.items():
 
-            if not ctypes.windll.user32.RegisterHotKey (self.window, i, modifiers, vk):
+            if not ctypes.windll.user32.RegisterHotKey(self.window, i, modifiers, vk):
 
                 print ("Unable to register id ", i)
 
