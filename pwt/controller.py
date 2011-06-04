@@ -36,7 +36,7 @@ class Controller(object):
 
         #create <<classname>> based ignorelist
         self.FLOATS = (#This list may hurt performance if it's huge
-                "#32770"#Task maanager
+                "#32770"#Task manager
                ,"progman"#Desktop
                 )
 
@@ -201,12 +201,12 @@ class Controller(object):
                 #if lparam is a tile event
                 elif message[1][2] in self.ADD_EVENTS:
 
-                    self.handle_add_event(Window(message[1][3]))
+                    self.handle_add_event(Window(message[1][3], self.FLOATS))
                     
                 #if lparam is a remove event
                 elif message[1][2] in self.REMOVE_EVENTS:
 
-                    self.handle_remove_event(Window(message[1][3]))
+                    self.handle_remove_event(Window(message[1][3], self.FLOATS))
 
                 if self.stop:
 
@@ -226,9 +226,6 @@ class Controller(object):
 
             #Remove systrayicon
             self.systrayicon.destroy()
-
-            #Destroy window
-            Window.destroy(self.hwnd)
 
     def handle_add_event(self, window):
         "Triggered when a window has to be added"

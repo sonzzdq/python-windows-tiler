@@ -24,9 +24,10 @@ from win32con import WS_EX_CONTROLPARENT
 
 class Window(object):
 
-    def __init__(self, hwnd):
+    def __init__(self, hwnd, floats):
 
         self.hwnd = hwnd
+        self.floats = floats
 
     def __eq__(self, other):
 
@@ -49,7 +50,9 @@ class Window(object):
 
                     if value & WS_EX_CONTROLPARENT:
 
-                        return True
+                        if self.hwnd not in floats:
+
+                            return True
         return False
 
     def has_decorations(self):
