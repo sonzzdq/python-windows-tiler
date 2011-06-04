@@ -204,7 +204,7 @@ class Tiler(object):
     def vertical_tile(self):
         "Tiles the windows vertical"
 
-        if len(self.windows) > 1:
+        if len(self.windows):
 
             #set the appropriate height depending on the amount of windows compared to the mastersize
             if self.masterareaCount == len(self.windows):
@@ -228,36 +228,23 @@ class Tiler(object):
 
             for i, window in enumerate(self.windows):
 
-                if i in range(self.masterareaCount):
+                if i < self.masterareaCount:
 
                     windowLeft = self.left
                     windowTop = self.top + i * heightMaster
 
-                    windowWidth = self.left + width
-                    windowHeight = self.top + (i + 1) * heightMaster
+                    windowRight = self.left + width
+                    windowBottom = self.top + (i + 1) * heightMaster
 
                 else:
 
                     windowLeft = self.left + width
                     windowTop = self.top + (i - self.masterareaCount) * height
 
-                    windowWidth = self.left + self.width
-                    windowHeight = self.top + (i - self.masterareaCount + 1) * height
+                    windowRight = self.left + self.width
+                    windowBottom = self.top + (i - self.masterareaCount + 1) * height
 
                 window.position((windowLeft
                     ,windowTop
-                    ,windowWidth
-                    ,windowHeight))
-
-        elif len(self.windows) == 1:
-
-            windowLeft = self.left 
-            windowTop = self.top
-
-            windowWidth = self.left + self.width
-            windowHeight = self.top + self.height 
-
-            self.windows[0].position((windowLeft
-                ,windowTop
-                ,windowWidth
-                ,windowHeight))
+                    ,windowRight
+                    ,windowBottom))
