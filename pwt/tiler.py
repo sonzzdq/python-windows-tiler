@@ -3,7 +3,9 @@ from pwt.layout import Layout
 
 class Tiler(object):
 
-    def __init__(self, rectangle):
+    def __init__(self, rectangle, floats):
+
+        self.floats = floats
 
         #rectangle
         #(left, top, right, bottom)
@@ -57,7 +59,7 @@ class Tiler(object):
         "Sets focus on the next window"
 
         #get focused window
-        window = Window.focused_window()
+        window = Window.focused_window(self.floats)
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -80,7 +82,7 @@ class Tiler(object):
         "Sets focus on the previous window"
 
         #get focused window
-        window = Window.focused_window()
+        window = Window.focused_window(self.floats)
 
         #only grab and move the focus if it is in the self
         if window in self.windows:
@@ -110,7 +112,7 @@ class Tiler(object):
         "Switches the window to the next position"
         
         #get focused window
-        window = Window.focused_window()
+        window = Window.focused_window(self.floats)
 
         #only grab and move the window if it is in the self
         if window in self.windows:
@@ -133,7 +135,7 @@ class Tiler(object):
     def move_focusedwindow_up(self):
         "Switches the window to the previous position"
 
-        window = Window.focused_window()
+        window = Window.focused_window(self.floats)
 
         #only grab and move the window if it is in the self
         if window in self.windows:
@@ -158,7 +160,7 @@ class Tiler(object):
     def move_focusedwindow_to_masterarea(self):
         "Moves the focused window to the first place in the masterarea"
 
-        window = Window.focused_window()
+        window = Window.focused_window(self.floats)
 
         #only move the focused window if it is in the tiler
         if window in self.windows:

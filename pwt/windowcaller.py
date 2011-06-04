@@ -12,9 +12,9 @@ from win32con import SW_SHOWNORMAL
 
 class WindowCaller(object):
 
-    def __init__(self, floatList):
+    def __init__(self, floats):
 
-        self.floatList = floatList
+        self.floats = floats
         self.windows = []
 
         win32gui.EnumWindows(self.callback, self.windows)
@@ -35,10 +35,10 @@ class WindowCaller(object):
 
                         if win32gui.GetWindowPlacement(hwnd)[1] == SW_SHOWNORMAL:
             
-                            if win32gui.GetClassName(hwnd) not in self.floatList:
+                            if win32gui.GetClassName(hwnd) not in self.floats:
 
                                 print(hwnd)
-                                resultList.append(Window(hwnd))
+                                resultList.append(Window(hwnd, self.floats))
                                 return True
 
     def windows_for_monitor(self, monitor):

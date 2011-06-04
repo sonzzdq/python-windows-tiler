@@ -50,7 +50,7 @@ class Window(object):
 
                     if value & WS_EX_CONTROLPARENT:
 
-                        if self.hwnd not in floats:
+                        if self.hwnd not in self.floats:
 
                             return True
         return False
@@ -153,13 +153,13 @@ class Window(object):
         win32gui.DestroyWindow(hwnd)
     
     @staticmethod
-    def focused_window():
+    def focused_window(floats):
         "Grabs the current window"
 
-        return Window(win32gui.GetForegroundWindow())
+        return Window(win32gui.GetForegroundWindow(), floats)
 
     @staticmethod
-    def window_under_cursor():
+    def window_under_cursor(floats):
         "Grabs the window under the cursor"
 
-        return Window(win32gui.WindowFromPoint(win32api.GetCursorPos()))
+        return Window(win32gui.WindowFromPoint(win32api.GetCursorPos()), floats)

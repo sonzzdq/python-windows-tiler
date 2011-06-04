@@ -138,7 +138,7 @@ class Controller(object):
             for i in range(9):
 
                 monitorWorkArea = pwt.utilities.get_monitor_workrectangle(monitorTuple[0])
-                tilers.append(Tiler(monitorWorkArea))
+                tilers.append(Tiler(monitorWorkArea, self.FLOATS))
 
             self.monitorTilers[int(monitorTuple[0])] = tilers 
 
@@ -318,7 +318,7 @@ class Controller(object):
         self.workspace = i
         self.systrayicon.refresh_icon(self.icon())
 
-        window = Window.window_under_cursor()
+        window = Window.window_under_cursor(self.FLOATS)
 
         if window:
 
@@ -402,7 +402,7 @@ class Controller(object):
     def handler_alt_shift_C(self):
         "Handles alt+shift+C, closes the current window"
 
-        Window.focused_window().close()
+        Window.focused_window(self.FLOATS).close()
 
     def handler_alt_one(self):
         "Handles alt+1, switches workspace"
@@ -472,7 +472,7 @@ class Controller(object):
 
         if self.workspace != 0:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -483,7 +483,7 @@ class Controller(object):
 
         if self.workspace != 1:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -494,7 +494,7 @@ class Controller(object):
 
         if self.workspace != 2:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -505,7 +505,7 @@ class Controller(object):
 
         if self.workspace != 3:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -516,7 +516,7 @@ class Controller(object):
 
         if self.workspace != 4:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -527,7 +527,7 @@ class Controller(object):
 
         if self.workspace != 5:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -538,7 +538,7 @@ class Controller(object):
 
         if self.workspace != 6:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -549,7 +549,7 @@ class Controller(object):
 
         if self.workspace != 7:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -560,7 +560,7 @@ class Controller(object):
 
         if self.workspace != 8:
 
-            window = Window.focused_window() 
+            window = Window.focused_window(self.FLOATS) 
 
             if window:
 
@@ -615,7 +615,7 @@ class Controller(object):
     def handler_alt_shift_I(self):
         "Handles alt+shft_I switches window to the next monitor"
 
-        window = Window.focused_window()
+        window = Window.focused_window(self.FLOATS)
         monitor = pwt.utilities.current_monitor()
         monitors = list(self.monitorTilers.keys())
 
@@ -645,7 +645,7 @@ class Controller(object):
     def handler_alt_shift_U(self):
         "Handles alt+shft_I switches window to the previous monitor"
 
-        window = Window.focused_window()
+        window = Window.focused_window(self.FLOATS)
         monitor = pwt.utilities.current_monitor()
         monitors = list(self.monitorTilers.keys())
 
@@ -675,7 +675,7 @@ class Controller(object):
     def handler_alt_shift_D(self):
         "Handles alt+shift+D, toggles decorations"
 
-        window = Window.focused_window()
+        window = Window.focused_window(self.FLOATS)
 
         if window:
 
