@@ -135,8 +135,8 @@ class Window(object):
         "Moves cursor to the given window"
 
         rect = win32gui.GetWindowRect(self.hwnd)
-        win32api.SetCursorPos((rect[2] + rect[0]) // 2
-            ,(rect[3] + rect[1]) // 2)
+        win32api.SetCursorPos(((rect[2] + rect[0]) // 2
+            ,(rect[3] + rect[1]) // 2))
 
     def update(self):
         "Update the window"
