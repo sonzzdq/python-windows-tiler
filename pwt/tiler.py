@@ -15,14 +15,22 @@ class Tiler(object):
         self.width = rectangle[2] - rectangle[0]
         self.height = rectangle[3] - rectangle[1]
 
-        self.masterareaSize = self.width // 2
         self.masterareaCount = 1
 
         self.windows = []
 
         self.currentLayout = 0
         self.layouts = []
-        self.layouts.append(Layout("Vertical", self.vertical_tile))
+
+        self.layouts.append(Layout("Vertical"
+            ,self.vertical_tile
+            ,self.width //2))
+
+        self.layouts.append(Layout("Horizontal"
+            ,self.horizontal_tile
+            ,self.height // 2))
+
+        self.masterarea = self.layouts[self.currentLayout].defaultMasterarea
 
     def tile_windows(self):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
@@ -36,10 +44,10 @@ class Tiler(object):
     def decrease_masterarea_width(self):
         "Decreases the masterarea width by 100px, else windows might overlap into different monitors and cause problems"
 
-        if self.masterareaSize >= 200:
+        if self.masterarea >= 200:
 
             #decrease master areaWidth 
-            self.masterareaSize -= 100
+            self.masterarea -= 100
             print("master area -= 100")
 
             self.tile_windows()
@@ -47,10 +55,10 @@ class Tiler(object):
     def increase_masterarea_width(self):
         "Increases the masterarea width by 100px, else windows might overlap into different monitors and cause problems"
 
-        if self.width - self.masterareaSize >= 200:
+        if self.width - self.masterarea >= 200:
 
             #increase master areaWidth 
-            self.masterareaSize += 100
+            self.masterarea += 100
             print("master area += 100")
 
             self.tile_windows()
@@ -196,6 +204,19 @@ class Tiler(object):
             print ("masterarea size += 1")
             self.tile_windows()
 
+    def next_layout(self):
+        "Switch to the next layout"
+
+        if self.currentLayout >= len(self.layouts) - 1:
+
+            self.currentLayout = 0
+
+        else:
+
+            self.currentLayout += 1
+
+        self.masterarea = self.layouts[self.currentLayout].defaultMasterarea
+        self.tile_windows()
 
     ###
     # TILE LAYOUTS
@@ -224,10 +245,11 @@ class Tiler(object):
             else:
 
                 heightMaster = self.height // self.masterareaCount
-                width = self.masterareaSize
+                width = self.masterarea
 
             for i, window in enumerate(self.windows):
 
+                #tile all master windows
                 if i < self.masterareaCount:
 
                     windowLeft = self.left
@@ -236,6 +258,7 @@ class Tiler(object):
                     windowRight = self.left + width
                     windowBottom = self.top + (i + 1) * heightMaster
 
+                #tile all the other windows
                 else:
 
                     windowLeft = self.left + width
@@ -243,6 +266,56 @@ class Tiler(object):
 
                     windowRight = self.left + self.width
                     windowBottom = self.top + (i - self.masterareaCount + 1) * height
+
+                window.position((windowLeft
+                    ,windowTop
+                    ,windowRight
+                    ,windowBottom))
+
+    def horizontal_tile(self):
+        "Tiles the windows horizontal"
+
+        if len(self.windows):
+
+            #set the appropriate width depending on the amount of windows compared to the mastersize
+            if self.masterareaCount == len(self.windows):
+
+                width = self.width
+
+            else:
+
+                width = self.width // (len(self.windows) - self.masterareaCount)
+
+            #set the appropriate height and width for the tile side
+            if self.masterareaCount >= len(self.windows):
+
+                widthMaster = self.width // len(self.windows)
+                height = self.height
+
+            else:
+
+                widthMaster = self.width // self.masterareaCount
+                height = self.masterarea
+
+            for i, window in enumerate(self.windows):
+
+                #tile all master windows
+                if i < self.masterareaCount:
+
+                    windowLeft = self.left + i * widthMaster
+                    windowTop = self.top 
+
+                    windowRight = self.left + (i + 1) * widthMaster
+                    windowBottom = self.top + height 
+
+                #tile all the other windows
+                else:
+
+                    windowLeft = self.left + (i - self.masterareaCount) * width
+                    windowTop = self.top + height 
+
+                    windowRight = self.left + (i - self.masterareaCount + 1) * width
+                    windowBottom = self.top + self.height 
 
                 window.position((windowLeft
                     ,windowTop

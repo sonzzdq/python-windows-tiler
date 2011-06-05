@@ -15,6 +15,7 @@ from win32con import MOD_ALT
 from win32con import MOD_SHIFT
 from win32con import VK_RETURN
 from win32con import VK_DELETE
+from win32con import VK_SPACE
 
 ##HOTKEY EVENTS
 from win32con import WM_HOTKEY
@@ -85,7 +86,8 @@ class Controller(object):
                 , 32: (MOD_ALT + MOD_SHIFT, ord("I"))
                 , 33: (MOD_ALT + MOD_SHIFT, ord("U"))
                 , 34: (MOD_ALT + MOD_SHIFT, ord("D"))
-                , 35: (MOD_ALT + MOD_SHIFT, VK_DELETE)
+                , 35: (MOD_ALT, VK_SPACE)
+                , 36: (MOD_ALT + MOD_SHIFT, VK_DELETE)
                 }
 
         #list the corresponding self.handlers 
@@ -123,7 +125,8 @@ class Controller(object):
                 , 32:  self.handler_alt_shift_I
                 , 33:  self.handler_alt_shift_U
                 , 34:  self.handler_alt_shift_D
-                , 35:  self.handler_alt_shift_delete
+                , 35:  self.handler_alt_space
+                , 36:  self.handler_alt_shift_delete
                 }
 
         #Create a dictionary mapping 9 tilers per monitor
@@ -674,6 +677,11 @@ class Controller(object):
                 targetTiler.tile_windows()
 
             window.focus()
+
+    def handler_alt_space(self):
+        "Handles alt+space, grabs the next tile layout"
+
+        self.current_tiler().next_layout()
 
     def handler_alt_shift_D(self):
         "Handles alt+shift+D, toggles decorations"
