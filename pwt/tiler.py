@@ -30,6 +30,11 @@ class Tiler(object):
             ,self.horizontal_tile
             ,self.height))
 
+        self.layouts.append(Layout("Fullscreen"
+            ,self.fullscreen_tile
+            ,1))
+
+
         self.masterarea = self.layouts[self.currentLayout].maxSize // 2
 
     def tile_windows(self):
@@ -321,3 +326,13 @@ class Tiler(object):
                     ,windowTop
                     ,windowRight
                     ,windowBottom))
+
+    def fullscreen_tile(self):
+        "Tiles all windows in fullscreen"
+        
+        for window in self.windows:
+
+            window.position((self.left
+                ,self.top
+                ,self.left + self.width
+                ,self.top + self.height))
