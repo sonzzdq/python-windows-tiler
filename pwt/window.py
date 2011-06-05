@@ -141,13 +141,19 @@ class Window(object):
     def update(self):
         "Update the window"
 
-        win32gui.SetWindowPos(self.hwnd
-                ,0
-                ,0
-                ,0
-                ,0
-                ,0
-                ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER)
+        try:
+
+            win32gui.SetWindowPos(self.hwnd
+                    ,0
+                    ,0
+                    ,0
+                    ,0
+                    ,0
+                    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER)
+
+        except win32gui.error:
+
+            print("Error while decorating window: ", self.hwnd)
 
     def classname(self):
         "Returns the window's classname"

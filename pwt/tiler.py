@@ -24,13 +24,13 @@ class Tiler(object):
 
         self.layouts.append(Layout("Vertical"
             ,self.vertical_tile
-            ,self.width //2))
+            ,self.width))
 
         self.layouts.append(Layout("Horizontal"
             ,self.horizontal_tile
-            ,self.height // 2))
+            ,self.height))
 
-        self.masterarea = self.layouts[self.currentLayout].defaultMasterarea
+        self.masterarea = self.layouts[self.currentLayout].maxSize // 2
 
     def tile_windows(self):
         "Tiles all windows, if windows are given it sets them to the self.windows attribute"
@@ -55,7 +55,7 @@ class Tiler(object):
     def increase_masterarea_width(self):
         "Increases the masterarea width by 100px, else windows might overlap into different monitors and cause problems"
 
-        if self.width - self.masterarea >= 200:
+        if self.layouts[self.currentLayout].maxSize - self.masterarea >= 200:
 
             #increase master areaWidth 
             self.masterarea += 100
@@ -215,7 +215,7 @@ class Tiler(object):
 
             self.currentLayout += 1
 
-        self.masterarea = self.layouts[self.currentLayout].defaultMasterarea
+        self.masterarea = self.layouts[self.currentLayout].maxSize // 2
         self.tile_windows()
 
     ###
