@@ -144,6 +144,7 @@ class Controller(object):
                 tilers.append(Tiler(monitorWorkArea, self.FLOATS))
 
             self.monitorTilers[int(monitorTuple[0])] = tilers 
+            print("Monitor:", monitorTuple[0])
 
         #Create systrayicon
         self.systrayicon = SysTrayIcon(self.icon()
@@ -196,6 +197,7 @@ class Controller(object):
             #message priming read
             message = pwt.utilities.windowmessage(self.hwnd) 
 
+            print(message)
             while message:
 
                 #if message is WM_HOTKEY
@@ -212,7 +214,8 @@ class Controller(object):
                 #if lparam is a remove event
                 elif message[1][2] in self.REMOVE_EVENTS:
 
-                    self.handle_remove_event(Window(message[1][3], self.FLOATS))
+                    self.handle_remove_event(Window(message[1][3], self.FLOATS)
+                            ,pwt.utilities.monitor_from_point(message[1][5]))
 
                 if self.stop:
 
@@ -252,10 +255,11 @@ class Controller(object):
                 tiler.windows.append(window)
                 tiler.tile_windows()
 
-    def handle_remove_event(self, window):
+    def handle_remove_event(self, window, monitor):
         "Triggered when a window needs to be removed"
 
-        tiler = self.current_tiler()
+
+        tiler = self.monitorTilers[monitor][self.workspace]
 
         if window in tiler.windows:
 
@@ -593,7 +597,7 @@ class Controller(object):
 
         else:
 
-            self.monitorTilers[monitors[0]][self.workspace].windows[0].focus()
+            self.monitorTilers[pwt.utilities.main_monitor()][self.workspace].windows[0].focus()
 
     def handler_alt_U(self):
         "Handles alt+F, changes focus to the previous monitor"
@@ -616,7 +620,7 @@ class Controller(object):
 
         else:
 
-            self.monitorTilers[monitors[0]][self.workspace].windows[0].focus()
+            self.monitorTilers[pwt.utilities.main_monitor()][self.workspace].windows[0].focus()
 
     def handler_alt_shift_I(self):
         "Handles alt+shft_I switches window to the next monitor"
@@ -649,7 +653,7 @@ class Controller(object):
             window.focus()
 
     def handler_alt_shift_U(self):
-        "Handles alt+shft_I switches window to the previous monitor"
+        "Handles alt+shft_U switches window to the previous monitor"
 
         window = Window.focused_window(self.FLOATS)
         monitor = pwt.utilities.current_monitor()
@@ -671,7 +675,7 @@ class Controller(object):
                 currentTiler.windows.remove(window)
                 currentTiler.tile_windows()
 
-            elif window not in targetTiler.windows:
+            if window not in targetTiler.windows:
 
                 targetTiler.windows.append(window)
                 targetTiler.tile_windows()

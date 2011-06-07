@@ -113,30 +113,58 @@ class Window(object):
     def show(self):
         "Shows the given window"
 
-        win32gui.ShowWindow(self.hwnd, SW_SHOWNORMAL)
+        try:
+
+            win32gui.ShowWindow(self.hwnd, SW_SHOWNORMAL)
+
+        except win32gui.error:
+
+            print("Error while showing window", self.hwnd)
 
     def hide(self):
         "Hide the given window"
 
-        win32gui.ShowWindow(self.hwnd, SW_HIDE)
+        try:
+
+            win32gui.ShowWindow(self.hwnd, SW_HIDE)
+
+        except win32gui.error:
+
+            print("Error while hiding window", self.hwnd)
 
     def close(self):
         "Closes the given window"
 
-        win32gui.SendMessage(self.hwnd, WM_CLOSE, 0, 0)
+        try:
+
+            win32gui.SendMessage(self.hwnd, WM_CLOSE, 0, 0)
+
+        except win32gui.error:
+
+            print("Error while closing window", self.hwnd)
 
     def focus(self):
         "Puts focus on the given window"
 
-        win32gui.SetForegroundWindow(self.hwnd)
+        try:
+
+            win32gui.SetForegroundWindow(self.hwnd)
+
+        except win32gui.error:
+
+            print("Error while focusing window", self.hwnd)
+
         self.set_cursor_window()
 
     def set_cursor_window(self):
         "Moves cursor to the given window"
 
         rect = win32gui.GetWindowRect(self.hwnd)
-        win32api.SetCursorPos(((rect[2] + rect[0]) // 2
-            ,(rect[3] + rect[1]) // 2))
+
+        if rect:
+
+            win32api.SetCursorPos(((rect[2] + rect[0]) // 2
+                ,(rect[3] + rect[1]) // 2))
 
     def update(self):
         "Update the window"
