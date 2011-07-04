@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>10</x>
+      <y>340</y>
+      <w>240</w>
+      <h>430</h>
+    </coordinates>
+    <panel_attributes>Tiler
+--
+currentLayout : Layout
+workarea : Tuple(Int
+, Int
+, Int
+, Int)
+masterarea : Int
+masterareaCount : Int
+--
+tile_windows()
+decrease_masterarea()
+increase_masterarea()
+focus_next()
+focus_back()
+focus_primary()
+move_focused_to_next()
+move_focused_to_back()
+make_primary(window)
+increase_masterarea_size()
+decrease_masterarea_size()
+next_layout()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>350</x>
+      <y>690</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Layout
+--
+name : String
+execute : Method(pickled?)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>420</x>
+      <y>840</y>
+      <w>280</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Hotkey	
+--
+keyId : Int
+modifiers : Int
+virtualkeys : Int
+command : Method
+--
+register(hWindow) : Boolean
+unregister(hWindow)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>10</x>
+      <y>0</y>
+      <w>410</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Monitor
+--
+hMonitor : PyHANDLE
+--
+exists() : Boolean
+workarea() : Tuple(Int
+, Int
+, Int
+, Int)
+contains_window(window : Window) : Boolean
+_current_monitor() : Monitor_
+_display_monitors() : Monitor[]_
+_main_monitor() : Monitor_
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>290</x>
+      <y>370</y>
+      <w>110</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>#Tuple info
+, Top
+, Right
+, Bottom
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>220</x>
+      <y>380</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>30;30;70;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>90</x>
+      <y>220</y>
+      <w>54</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m2=     9
+</panel_attributes>
+    <additional_attributes>30;30;30;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>220</x>
+      <y>700</y>
+      <w>150</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+
+m2=1..*
+</panel_attributes>
+    <additional_attributes>30;30;130;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>10</x>
+      <y>840</y>
+      <w>300</w>
+      <h>470</h>
+    </coordinates>
+    <panel_attributes>Window
+--
+hWindow : PyHANDLE
+/classname : String
+/windowmessage : MSG
+--
+validate() : Boolean
+is_decorated() : Boolean
+undecorate() : Boolean
+decorate() : Boolean
+position(position :Tuple(Int
+, Int
+, Int
+, Int)) : Boolean
+show() : Boolean
+hide() : Boolean
+close() : Boolean
+focus() : Boolean
+update() : Boolean
+center_cursor() : Boolean
+register_shellhook() : Boolean
+unregister_shellhook() : Boolean
+register_hotkeys() : Boolean
+unregister_hotkeys() : Boolean
+_focused_window() : Window_
+_window_from_cursor() : Window_
+_valid_windows_from_monitor(_
+_monitor : Monitor) : Window[]_
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>60</x>
+      <y>740</y>
+      <w>88</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m2=         0..*
+</panel_attributes>
+    <additional_attributes>50;30;50;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>220</y>
+      <w>50</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>30;30;30;150</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>0</y>
+      <w>280</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>/Utility/
+--
+ 
+--
+next_item(list : Type[]
+, currentItem : Type) : Type
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>870</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+m2=0..*
+</panel_attributes>
+    <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>420</x>
+      <y>1040</y>
+      <w>280</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>NotifyIcon
+--
+icon : String
+hoverText : String
+--
+destroy() : Boolean
+draw_icon(icon : String) : Boolean
+show_balloon(balloontext : String
+, balloontitle : String)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>1080</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+</diagram>

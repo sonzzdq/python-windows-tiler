@@ -1,31 +1,26 @@
-#!/usr/bin/env python
-# Module     : SysTrayIcon.py
-# Synopsis   : Windows System tray icon.
-# Programmer : Simon Brunning - simon@brunningonline.net
-# Date       : 11 April 2005
-# Notes      : Based on (i.e. ripped off from) Mark Hammond's
-#              win32gui_taskbar.py and win32gui_menu.py demos from PyWin32
-# Modified   : Bob Reynders - tzbob@hotmail.com
-#              Stripped it down to suit my own needs, formatted code and made it Python3 friendly 
-
-         
+import logging
 import os
-import win32api
-import win32con
-try:
-    import winxpgui as win32gui
-except ImportError:
-    import win32gui
 
-class SysTrayIcon(object):
-    "Object representing a systemtrayicon on windows"
-    
-    def __init__(self, icon, hover_text, window_class_name):
-        
-        self.icon = icon
-        self.hover_text = hover_text
-        self.window_class_name = window_class_name
-        
+import win32gui
+import win32con
+
+from pwt.window import Window
+
+class NotifyIcon(Window):
+
+    def __init__(self, hoverText, icon):
+
+        self.hotkeys = []
+
+        #create <<classname>> based ignorelist
+        self.FLOATS = (#This list may hurt performance if it's huge
+                "#32770"#Task manager
+               ,"progman"#Desktop
+                )
+
+        self.hoverText = hoverText
+        self.window_class_name = "Notify icon"
+
         # Register the Window class.
         window_class = win32gui.WNDCLASS()
         hinst = window_class.hInstance = win32gui.GetModuleHandle(None)
@@ -37,7 +32,7 @@ class SysTrayIcon(object):
 
         # Create the Window.
         style = win32con.WS_OVERLAPPED | win32con.WS_SYSMENU
-        self.hwnd = win32gui.CreateWindow(classAtom,
+        self.hWindow = win32gui.CreateWindow(classAtom,
                 self.window_class_name,
                 style,
                 0,
@@ -49,25 +44,21 @@ class SysTrayIcon(object):
                 hinst,
                 None)
 
-        win32gui.UpdateWindow(self.hwnd)
+        win32gui.UpdateWindow(self.hWindow)
 
         self.notify_id = None
-        self.refresh_icon()
-       
-    def refresh_icon(self, icon=None):
+        self.draw_icon(icon)
 
-        if icon:
-            
-            self.icon = icon
+    def draw_icon(self, icon):
 
         # Try and find a custom icon
         hinst = win32gui.GetModuleHandle(None)
 
-        if os.path.isfile(self.icon):
+        if os.path.isfile(icon):
 
             icon_flags = win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE
-            hicon = win32gui.LoadImage(hinst,
-                    self.icon,
+            self.hicon = win32gui.LoadImage(hinst,
+                    icon,
                     win32con.IMAGE_ICON,
                     0,
                     0,
@@ -75,8 +66,8 @@ class SysTrayIcon(object):
 
         else:
 
-            print("Can't find icon file - using default.")
-            hicon = win32gui.LoadIcon(0, win32con.IDI_APPLICATION)
+            logging.warning("Can't find icon file - using default.")
+            self.hicon = win32gui.LoadIcon(0, win32con.IDI_APPLICATION)
 
         if self.notify_id: 
 
@@ -86,16 +77,34 @@ class SysTrayIcon(object):
             
             message = win32gui.NIM_ADD
 
-        self.notify_id = (self.hwnd,
+        self.notify_id = (self.hWindow,
                 0,
                 win32gui.NIF_ICON | win32gui.NIF_MESSAGE | win32gui.NIF_TIP,
                 win32con.WM_USER+20,
-                hicon,
-                self.hover_text)
+                self.hicon,
+                self.hoverText)
 
         win32gui.Shell_NotifyIcon(message, self.notify_id)
 
     def destroy(self):
 
-        nid = (self.hwnd, 0)
+        nid = (self.hWindow, 0)
         win32gui.Shell_NotifyIcon(win32gui.NIM_DELETE, nid)
+
+    def show_balloon(self, balloontext, balloontitle):
+        """
+        Shows a balloon notification
+        """
+
+        nid = (self.hWindow
+                ,0
+                ,win32gui.NIF_INFO | win32gui.NIF_ICON | win32gui.NIF_MESSAGE | win32gui.NIF_TIP
+                ,win32con.WM_USER+20
+                ,self.hicon
+                ,self.hoverText
+                ,balloontext
+                ,1
+                ,balloontitle
+                ,win32gui.NIIF_INFO) 
+
+        win32gui.Shell_NotifyIcon(win32gui.NIM_MODIFY, nid)

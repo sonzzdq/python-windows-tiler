@@ -4,7 +4,7 @@ from win32event import CreateMutex
 from win32api import CloseHandle, GetLastError
 from winerror import ERROR_ALREADY_EXISTS
 
-class singleinstance:
+class Singleinstance:
     """ Limits application to single instance """
 
     def __init__(self):
