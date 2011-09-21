@@ -50,7 +50,7 @@ class Monitor(object):
 
         try:
 
-            if win32api.MonitorFromWindow(window.hWindow) == self.hMonitor:
+            if win32api.MonitorFromWindow(window.hWindow, MONITOR_DEFAULTTONEAREST) == self.hMonitor:
 
                 return True
 

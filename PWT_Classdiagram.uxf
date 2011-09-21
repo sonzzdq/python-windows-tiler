@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>10</x>
-      <y>340</y>
+      <x>20</x>
+      <y>670</y>
       <w>240</w>
       <h>430</h>
     </coordinates>
@@ -36,8 +36,8 @@ next_layout()</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>350</x>
-      <y>690</y>
+      <x>360</x>
+      <y>1020</y>
       <w>210</w>
       <h>90</h>
     </coordinates>
@@ -52,8 +52,8 @@ execute : Method(pickled?)
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>840</y>
+      <x>430</x>
+      <y>1170</y>
       <w>280</w>
       <h>170</h>
     </coordinates>
@@ -71,8 +71,8 @@ unregister(hWindow)</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>10</x>
-      <y>0</y>
+      <x>20</x>
+      <y>330</y>
       <w>410</w>
       <h>250</h>
     </coordinates>
@@ -98,8 +98,8 @@ _main_monitor() : Monitor_
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>290</x>
-      <y>370</y>
+      <x>300</x>
+      <y>700</y>
       <w>110</w>
       <h>90</h>
     </coordinates>
@@ -113,8 +113,8 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
-      <y>380</y>
+      <x>230</x>
+      <y>710</y>
       <w>90</w>
       <h>50</h>
     </coordinates>
@@ -124,8 +124,8 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>220</y>
+      <x>100</x>
+      <y>550</y>
       <w>54</w>
       <h>140</h>
     </coordinates>
@@ -137,8 +137,8 @@ m2=     9
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
-      <y>700</y>
+      <x>230</x>
+      <y>1030</y>
       <w>150</w>
       <h>50</h>
     </coordinates>
@@ -151,8 +151,8 @@ m2=1..*
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>10</x>
-      <y>840</y>
+      <x>20</x>
+      <y>1170</y>
       <w>300</w>
       <h>470</h>
     </coordinates>
@@ -166,6 +166,7 @@ validate() : Boolean
 is_decorated() : Boolean
 undecorate() : Boolean
 decorate() : Boolean
+toggle_decoration()
 position(position :Tuple(Int
 , Int
 , Int
@@ -193,8 +194,8 @@ _monitor : Monitor) : Window[]_
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>60</x>
-      <y>740</y>
+      <x>70</x>
+      <y>1070</y>
       <w>88</w>
       <h>120</h>
     </coordinates>
@@ -206,8 +207,8 @@ m2=         0..*
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>300</x>
-      <y>220</y>
+      <x>310</x>
+      <y>550</y>
       <w>50</w>
       <h>170</h>
     </coordinates>
@@ -218,7 +219,7 @@ m2=         0..*
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>490</x>
-      <y>0</y>
+      <y>340</y>
       <w>280</w>
       <h>170</h>
     </coordinates>
@@ -235,8 +236,8 @@ next_item(list : Type[]
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>280</x>
-      <y>870</y>
+      <x>290</x>
+      <y>1200</y>
       <w>160</w>
       <h>50</h>
     </coordinates>
@@ -248,8 +249,8 @@ m2=0..*
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>1040</y>
+      <x>430</x>
+      <y>1370</y>
       <w>280</w>
       <h>170</h>
     </coordinates>
@@ -269,12 +270,39 @@ show_balloon(balloontext : String
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>280</x>
-      <y>1080</y>
+      <x>290</x>
+      <y>1410</y>
       <w>160</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>30;30;140;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>0</y>
+      <w>410</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Controller
+--
+workspace : Int
+--
+exists() : Boolean
+workarea() : Tuple(Int
+, Int
+, Int
+, Int)
+contains_window(window : Window) : Boolean
+_current_monitor() : Monitor_
+_display_monitors() : Monitor[]_
+_main_monitor() : Monitor_
+
+
+
+</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

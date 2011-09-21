@@ -34,4 +34,3 @@ class Hotkey(object):
         """
 
         ctypes.windll.user32.UnregisterHotKey (window.hWindow, self.keyId)
-        logging.info("Unregistered key")

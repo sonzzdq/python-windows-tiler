@@ -71,6 +71,18 @@ class Controller(object):
         
         return Monitor.current_monitor_from_list(self.monitors).tilers[self.group]
 
+    @property
+    def groupwindows(self):
+        "returns all the windows of the current group"
+
+        windows = []
+
+        for monitor in self.monitors:
+
+            windows.extend(monitor.tilers[self.group].windows)
+
+        return windows
+
     def start(self):
         "start the listeners with a safety try/finally to unregister keys and kill the icon"
 
@@ -129,19 +141,17 @@ class Controller(object):
     def handle_add_event(self, window):
         "Triggered when a window has to be added"
 
-        if window.validate():
+
+        if window not in self.groupwindows and window.validate():
 
             tiler = self.current_tiler
 
-            #if it should be tiled and isn't already tiled
-            if window not in tiler.windows:
-                
-                #undecorate and update the window
-                window.undecorate()
-                window.update()
+            #undecorate and update the window
+            window.undecorate()
+            window.update()
 
-                #append and tile retile the windows
-                tiler.add_window(window)
+            #append and tile retile the windows
+            self.current_tiler.add_window(window)
 
     def handle_remove_event(self, window, monitor):
         "Triggered when a window needs to be removed"

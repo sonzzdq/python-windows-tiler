@@ -1,3 +1,4 @@
+import re #CX_Freeze throws up errors without it
 from pwt.controller import Controller
 from singleinstance import Singleinstance
 

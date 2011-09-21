@@ -1,4 +1,5 @@
 import ctypes
+import logging
 import win32gui
 import win32api
 
@@ -161,7 +162,8 @@ class Window(object):
                         ,SW_SHOWNORMAL
                         ,windowPlacement[2]
                         ,windowPlacement[3]
-                        ,position))
+                        ,position
+            ))
 
             return True
 
