@@ -172,7 +172,10 @@ class Controller(object):
 
                 for window in tiler.windows:
 
-                    window.decorate()
+                    if not window.is_decorated():
+
+                        window.decorate()
+
                     window.update()
                     window.show()
 

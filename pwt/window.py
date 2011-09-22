@@ -14,10 +14,13 @@ from win32con import SW_HIDE
 
 from win32con import GW_OWNER 
 from win32con import GWL_STYLE 
+from win32con import GWL_EXSTYLE 
 
 from win32con import WS_CAPTION 
+from win32con import WS_SIZEBOX
 from win32con import WS_EX_APPWINDOW 
 from win32con import WS_EX_CONTROLPARENT
+from win32con import WS_EX_TOOLWINDOW
 
 class Window(object):
 
@@ -49,17 +52,17 @@ class Window(object):
 
         if win32gui.IsWindowVisible(self.hWindow):
 
-            if not win32gui.GetWindow(self.hWindow, GW_OWNER):
+            if not win32gui.GetParent(self.hWindow):
 
-                value = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
+                value = win32gui.GetWindowLong(self.hWindow, GWL_EXSTYLE)
+                owner = win32gui.GetWindow(self.hWindow, GW_OWNER)
 
-                if value & WS_EX_APPWINDOW:
+                if (not owner and not value & WS_EX_TOOLWINDOW) or value & WS_EX_APPWINDOW:
 
-                    if value & WS_EX_CONTROLPARENT:
+                    if self.classname not in self.FLOATS:
 
-                        if self.hWindow not in self.FLOATS:
+                        return True
 
-                            return True
         return False
 
     def is_decorated(self):
@@ -98,6 +101,7 @@ class Window(object):
             style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
 
             style -= WS_CAPTION 
+            style -= WS_SIZEBOX
 
             win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
 
@@ -121,6 +125,7 @@ class Window(object):
             style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
 
             style += WS_CAPTION
+            style += WS_SIZEBOX
 
             win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
 
