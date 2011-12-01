@@ -7,17 +7,17 @@ from win32con import SWP_FRAMECHANGED
 from win32con import SWP_NOMOVE 
 from win32con import SWP_NOSIZE 
 from win32con import SWP_NOZORDER
-
-from win32con import WM_CLOSE 
-from win32con import SW_SHOWNORMAL 
 from win32con import SW_HIDE
+from win32con import SW_FORCEMINIMIZE
+from win32con import SW_SHOWNORMAL
 
 from win32con import GW_OWNER 
 from win32con import GWL_STYLE 
 from win32con import GWL_EXSTYLE 
 
+from win32con import WM_CLOSE 
+
 from win32con import WS_CAPTION 
-from win32con import WS_SIZEBOX
 from win32con import WS_EX_APPWINDOW 
 from win32con import WS_EX_CONTROLPARENT
 from win32con import WS_EX_TOOLWINDOW
@@ -34,7 +34,7 @@ class Window(object):
         self.FLOATS = (#This list may hurt performance if it's huge
                 "#32770"#Task manager
                ,"progman"#Desktop
-                )
+        )
 
     def __eq__(self, other):
 
@@ -101,7 +101,6 @@ class Window(object):
             style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
 
             style -= WS_CAPTION 
-            style -= WS_SIZEBOX
 
             win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
 
@@ -125,7 +124,6 @@ class Window(object):
             style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
 
             style += WS_CAPTION
-            style += WS_SIZEBOX
 
             win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
 
@@ -161,14 +159,13 @@ class Window(object):
 
         try:
 
-            windowPlacement = win32gui.GetWindowPlacement(self.hWindow)
-            win32gui.SetWindowPlacement(self.hWindow
-                    ,(windowPlacement[0]
-                        ,SW_SHOWNORMAL
-                        ,windowPlacement[2]
-                        ,windowPlacement[3]
-                        ,position
-            ))
+            win32gui.MoveWindow(self.hWindow
+                    ,position[0]
+                    ,position[1]
+                    ,position[2] - position[0]
+                    ,position[3] - position[1]
+                    ,True
+            )
 
             return True
 
@@ -199,10 +196,10 @@ class Window(object):
 
     def hide(self):
         """
-        Puts the window under a hidden state
-        Returns true on succes
-        Returns false on error
-        """
+        Puts the window under a hidden state
+        Returns true on succes
+        Returns false on error
+        """
 
         try:
 
@@ -215,6 +212,25 @@ class Window(object):
             logging.exception("Error while hiding window")
 
             return False
+
+    def toggle_visibility(self):
+        """
+        Toggles visibility depending on the current state
+        which is fetched from the return of a first ShowWindow
+        (doesn't work with getwindowplacement for some reason)
+        """
+
+        try:
+
+            state = win32gui.ShowWindow(self.hWindow, SW_SHOWNORMAL)
+
+            if state:
+
+                win32gui.ShowWindow(self.hWindow, SW_HIDE)
+
+        except win32gui.error:
+
+            logging.exception("Error while toggling visibility")
 
     def close(self):
         """
@@ -272,7 +288,8 @@ class Window(object):
                     ,0
                     ,0
                     ,0
-                    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER)
+                    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
+            )
 
             return True
 
@@ -291,18 +308,12 @@ class Window(object):
 
         try: 
 
-            rect = win32gui.GetWindowRect(self.hWindow)
+            rect = self.windowrectangle
 
             win32api.SetCursorPos(((rect[2] + rect[0]) // 2
                 ,(rect[3] + rect[1]) // 2))
 
             return True
-
-        except win32gui.error:
-
-            logging.exception("Error while getting the window coordinates")
-
-            return False
 
         except win32api.error:
 
@@ -371,6 +382,23 @@ class Window(object):
             hotkey.unregister(self)
 
     @property
+    def windowrectangle(self):
+        """
+        Returns the window's bounding rectangle
+        """
+
+        try: 
+
+            return win32gui.GetWindowRect(self.hWindow)
+
+
+        except win32gui.error:
+
+            logging.exception("Error while getting the window coordinates")
+
+            return False
+
+    @property
     def classname(self):
         """
         Returns the window's classname
@@ -396,6 +424,53 @@ class Window(object):
 
             return None
 
+    @staticmethod
+    def find_window(classname):
+        """
+        Finds the window with the given classname
+        """
+
+        try:
+
+            return Window(win32gui.FindWindow(classname, None))
+
+        except win32gui.error:
+
+            logging.exception("Error while finding the window")
+
+            return None
+
+    @staticmethod
+    def get_startbutton():
+        """
+        Finds the startbutton
+        """
+
+        try:
+
+
+            desktop = win32gui.GetDesktopWindow()
+            return Window(win32gui.FindWindowEx(desktop
+                ,None
+                ,"button"
+                , None
+            ))
+
+        except win32gui.error:
+
+            logging.exception("Error while finding the window")
+
+            return None
+
+    @staticmethod
+    def get_taskbar():
+        """
+        Finds the taskbar
+        """
+
+        return Window.find_window("Shell_TrayWnd")
+
+        
     @staticmethod
     def focused_window():
         """

@@ -12,12 +12,6 @@ class NotifyIcon(Window):
 
         self.hotkeys = []
 
-        #create <<classname>> based ignorelist
-        self.FLOATS = (#This list may hurt performance if it's huge
-                "#32770"#Task manager
-               ,"progman"#Desktop
-                )
-
         self.hoverText = hoverText
         self.window_class_name = "Notify icon"
 

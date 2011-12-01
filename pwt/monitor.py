@@ -7,6 +7,7 @@ from pwt.tiler import Tiler
 
 from win32con import MONITOR_DEFAULTTONEAREST
 from win32con import MONITOR_DEFAULTTOPRIMARY
+
 class Monitor(object):
 
     def __init__(self, hMonitor):

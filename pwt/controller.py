@@ -32,21 +32,26 @@ class Controller(object):
         #the events that trigger the removal of a window
         self.REMOVE_EVENTS = (HSHELL_WINDOWDESTROYED
                 ,#placeholder
-                )
+        )
 
         #the events that trigger an additional window
         self.ADD_EVENTS = (HSHELL_WINDOWCREATED
                 ,#placeholder
-                )
+        )
 
         #notifyicon
         self.notifyicon = NotifyIcon(name
-                ,self.icon)
+                ,self.icon
+        )
 
         self.add_hotkeys_to_notifyicon()
-
         self.notifyicon.register_hotkeys()
+
         self.notifyicon.register_shellhook() 
+
+        #taskbar
+        self.taskbar = Window.get_taskbar()
+        self.startbutton = Window.get_startbutton()
 
         #monitors
         self.monitors = Monitor.display_monitors()
@@ -135,12 +140,14 @@ class Controller(object):
             #Decorate windows
             self.decorate_all_tiledwindows()
 
+            #make sure the taskbar is shown on exit
+            self.taskbar.show()
+
             #Remove icon
             self.notifyicon.destroy()
 
     def handle_add_event(self, window):
         "Triggered when a window has to be added"
-
 
         if window not in self.groupwindows and window.validate():
 
@@ -529,7 +536,8 @@ class Controller(object):
 
         self.current_tiler.next_layout()
         self.notifyicon.show_balloon(self.current_tiler.currentLayout.name
-                ,"LAYOUT")
+                ,"LAYOUT"
+        )
 
     def handler_alt_shift_D(self):
         "Handles alt+shift+D, toggles decorations"
@@ -537,10 +545,16 @@ class Controller(object):
         Window.focused_window().toggle_decoration()
 
     def handler_alt_shift_delete(self):
-        "Handles alt+shift+end, quits the listening"
+        "Handles alt+shift+delete, quits the listening"
         
         #stop the polling
         self.stop = True
+
+    def handler_alt_V(self):
+        "Handles alt+V, hides taskbar"
+        
+        self.taskbar.toggle_visibility()
+        self.startbutton.toggle_visibility()
 
     def add_hotkeys_to_notifyicon(self):
         """
@@ -728,3 +742,7 @@ class Controller(object):
             , VK_DELETE
             , self.handler_alt_shift_delete))
 
+        self.notifyicon.hotkeys.append(Hotkey(37
+            , MOD_ALT 
+            , ord("V")
+            , self.handler_alt_V))

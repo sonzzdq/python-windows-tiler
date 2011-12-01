@@ -6,27 +6,24 @@ class Tiler(object):
 
     def __init__(self, workarea):
 
-        #rectangle
-        #(left, top, right, bottom)
-        self.left = workarea[0]
-        self.top = workarea[1]
-
-        self.width = workarea[2] - workarea[0]
-        self.height = workarea[3] - workarea[1]
+        self.calc_dimensions(workarea)
 
         self.layouts = []
 
         self.layouts.append(Layout("Vertical"
             ,self.vertical_tile
-            ,self.width))
+            ,self.width
+        ))
 
         self.layouts.append(Layout("Horizontal"
             ,self.horizontal_tile
-            ,self.height))
+            ,self.height
+        ))
 
         self.layouts.append(Layout("Fullscreen"
             ,self.fullscreen_tile
-            ,1))
+            ,1
+        ))
 
         self.currentLayout = self.layouts[0]
 
@@ -34,6 +31,16 @@ class Tiler(object):
         self.masterareaCount = 1
 
         self.windows = []
+
+    def calc_dimensions(self,workarea):
+
+        #rectangle
+        #(left, top, right, bottom)
+        self.left = workarea[0]
+        self.top = workarea[1]
+
+        self.width = workarea[2] - workarea[0]
+        self.height = workarea[3] - workarea[1]
 
     def tile_windows(self):
         """
@@ -159,7 +166,7 @@ class Tiler(object):
             #else shift it with the following window
             else:
 
-                self.windows[i], self.windows[i + 1] = self.windows[i + 1], self.windows[i]
+                self.windows[i], self.windows[i+1] = self.windows[i+1], self.windows[i]
 
             self.tile_windows()
 
@@ -274,7 +281,8 @@ class Tiler(object):
 
         if len(self.windows):
 
-            #set the appropriate height depending on the amount of windows compared to the mastersize
+            #set the appropriate height depending
+            #on the amount of windows compared to the mastersize
             if self.masterareaCount == len(self.windows):
 
                 height = self.height
