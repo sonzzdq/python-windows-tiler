@@ -140,15 +140,17 @@ class Window(object):
         Adds or removes decoration
         """
 
-        if self.is_decorated():
+        if self.validate():
 
-            self.undecorate()
+            if self.is_decorated():
 
-        else:
+                self.undecorate()
 
-            self.decorate()
+            else:
 
-        self.update()
+                self.decorate()
+
+            self.update()
 
     def position(self, position):
         """
