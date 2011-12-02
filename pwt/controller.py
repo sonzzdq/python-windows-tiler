@@ -2,6 +2,7 @@ from pwt.notifyicon     import NotifyIcon
 from pwt.hotkey         import Hotkey
 from pwt.monitor        import Monitor
 from pwt.window         import Window
+from pwt.taskbar        import Taskbar
 from pwt.utility        import Utility
 
 ##KEYS
@@ -49,9 +50,7 @@ class Controller(object):
 
         self.notifyicon.register_shellhook() 
 
-        #taskbar
-        self.taskbar = Window.get_taskbar()
-        self.startbutton = Window.get_startbutton()
+        self.taskbar = Taskbar()
 
         #monitors
         self.monitors = Monitor.display_monitors()
@@ -554,7 +553,11 @@ class Controller(object):
         "Handles alt+V, hides taskbar"
         
         self.taskbar.toggle_visibility()
-        self.startbutton.toggle_visibility()
+
+        curmonitor = Monitor.current_monitor_from_list(self.monitors)
+        curmonitor.recalc_tiler_dimensions()
+
+        self.current_tiler.tile_windows()
 
     def add_hotkeys_to_notifyicon(self):
         """

@@ -213,6 +213,16 @@ class Window(object):
 
             return False
 
+    def is_visible(self):
+
+        try:
+
+            return win32gui.ShowWindow(self.hWindow, SW_SHOWNORMAL)
+
+        except win32gui.error:
+
+            logging.exception("Error while checking visibility")
+
     def toggle_visibility(self):
         """
         Toggles visibility depending on the current state
@@ -222,9 +232,7 @@ class Window(object):
 
         try:
 
-            state = win32gui.ShowWindow(self.hWindow, SW_SHOWNORMAL)
-
-            if state:
+            if self.is_visible():
 
                 win32gui.ShowWindow(self.hWindow, SW_HIDE)
 
@@ -440,37 +448,7 @@ class Window(object):
 
             return None
 
-    @staticmethod
-    def get_startbutton():
-        """
-        Finds the startbutton
-        """
-
-        try:
-
-
-            desktop = win32gui.GetDesktopWindow()
-            return Window(win32gui.FindWindowEx(desktop
-                ,None
-                ,"button"
-                , None
-            ))
-
-        except win32gui.error:
-
-            logging.exception("Error while finding the window")
-
-            return None
-
-    @staticmethod
-    def get_taskbar():
-        """
-        Finds the taskbar
-        """
-
-        return Window.find_window("Shell_TrayWnd")
-
-        
+      
     @staticmethod
     def focused_window():
         """

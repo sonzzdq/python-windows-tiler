@@ -41,6 +41,12 @@ class Monitor(object):
 
             return False
 
+    def recalc_tiler_dimensions(self):
+
+        for tiler in self.tilers:
+
+            tiler.calc_dimensions(self.workarea)
+
     def contains_window(self, window):
         """
         Checks if the given window is in the monitor
