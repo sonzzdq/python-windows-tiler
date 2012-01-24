@@ -5,6 +5,8 @@ from pwt.window         import Window
 from pwt.taskbar        import Taskbar
 from pwt.utility        import Utility
 
+import pwt.config
+
 ##KEYS
 from win32con import MOD_ALT
 from win32con import MOD_SHIFT
@@ -32,17 +34,17 @@ class Controller(object):
 
         #the events that trigger the removal of a window
         self.REMOVE_EVENTS = (HSHELL_WINDOWDESTROYED
-                ,#placeholder
+                , #placeholder
         )
 
         #the events that trigger an additional window
         self.ADD_EVENTS = (HSHELL_WINDOWCREATED
-                ,#placeholder
+                , #placeholder
         )
 
         #notifyicon
         self.notifyicon = NotifyIcon(name
-                ,self.icon
+                , self.icon
         )
 
         self.add_hotkeys_to_notifyicon()
@@ -120,7 +122,7 @@ class Controller(object):
                 elif message[1][2] in self.REMOVE_EVENTS:
 
                     self.handle_remove_event(Window(message[1][3])
-                            ,Monitor.monitor_from_point_in_list(self.monitors, message[1][5]))
+                            , Monitor.monitor_from_point_in_list(self.monitors, message[1][5]))
 
                 if self.stop:
 
@@ -535,7 +537,7 @@ class Controller(object):
 
         self.current_tiler.next_layout()
         self.notifyicon.show_balloon(self.current_tiler.currentLayout.name
-                ,"LAYOUT"
+                , "LAYOUT"
         )
 
     def handler_alt_shift_D(self):
@@ -558,6 +560,11 @@ class Controller(object):
         curmonitor.recalc_tiler_dimensions()
 
         self.current_tiler.tile_windows()
+
+    def handler_alt_S(self):
+        "Handles alt+V, hides taskbar"
+
+        print(Window.focused_window().classname)
 
     def add_hotkeys_to_notifyicon(self):
         """
@@ -749,3 +756,8 @@ class Controller(object):
             , MOD_ALT 
             , ord("V")
             , self.handler_alt_V))
+
+        self.notifyicon.hotkeys.append(Hotkey(38
+            , MOD_ALT 
+            , ord("S")
+            , self.handler_alt_S))

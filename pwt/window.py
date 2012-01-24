@@ -3,6 +3,8 @@ import logging
 import win32gui
 import win32api
 
+import pwt.config
+
 from win32con import SWP_FRAMECHANGED 
 from win32con import SWP_NOMOVE 
 from win32con import SWP_NOSIZE 
@@ -30,11 +32,7 @@ class Window(object):
 
         self.hWindow = hWindow
 
-        #create <<classname>> based ignorelist
-        self.FLOATS = (#This list may hurt performance if it's huge
-                "#32770"#Task manager
-               ,"progman"#Desktop
-        )
+        self.floating = self.classname not in pwt.config.config["window"]["float"].split(";")
 
     def __eq__(self, other):
 
@@ -59,7 +57,7 @@ class Window(object):
 
                 if (not owner and not value & WS_EX_TOOLWINDOW) or value & WS_EX_APPWINDOW:
 
-                    if self.classname not in self.FLOATS:
+                    if self.floating:
 
                         return True
 

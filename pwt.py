@@ -1,4 +1,5 @@
 import re #CX_Freeze throws up errors without it
+
 from pwt.controller import Controller
 from singleinstance import Singleinstance
 
@@ -7,7 +8,8 @@ import sys
 import logging
 logging.basicConfig(filename="errors.log"
         , level=logging.DEBUG
-        , format="%(asctime)s - %(levelname)s - %(message)s")
+        , format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 if __name__ == "__main__":
 
@@ -23,4 +25,5 @@ if __name__ == "__main__":
         logging.info("START controller")
 
         controller.start()
+
 
