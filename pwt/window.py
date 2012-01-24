@@ -32,7 +32,8 @@ class Window(object):
 
         self.hWindow = hWindow
 
-        self.floating = self.classname not in pwt.config.config["window"]["float"].split(";")
+        self.floating = self.classname in pwt.config.config["window"]["float"].split(";")
+        self.decorated = self.classname in pwt.config.config["window"]["decorate"].split(";")
 
     def __eq__(self, other):
 
@@ -57,7 +58,7 @@ class Window(object):
 
                 if (not owner and not value & WS_EX_TOOLWINDOW) or value & WS_EX_APPWINDOW:
 
-                    if self.floating:
+                    if not self.floating:
 
                         return True
 
@@ -271,7 +272,8 @@ class Window(object):
 
             win32gui.SetForegroundWindow(self.hWindow)
 
-            self.center_cursor()
+            if pwt.config.config.getboolean("global", "center_cursor"):
+                self.center_cursor()
 
             return True
 
@@ -509,7 +511,9 @@ class Window(object):
 
         for window in windows:
 
-            window.undecorate()
+            if not window.decorated:
+                window.undecorate()
+
             window.update()
 
         return windows

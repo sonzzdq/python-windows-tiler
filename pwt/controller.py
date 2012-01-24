@@ -155,7 +155,10 @@ class Controller(object):
             tiler = self.current_tiler
 
             #undecorate and update the window
-            window.undecorate()
+            if not window.decorated:
+                print(window.classname)
+                window.undecorate()
+
             window.update()
 
             #append and tile retile the windows
@@ -543,7 +546,9 @@ class Controller(object):
     def handler_alt_shift_D(self):
         "Handles alt+shift+D, toggles decorations"
 
-        Window.focused_window().toggle_decoration()
+        window = Window.focused_window()
+        if not window.decorated:
+            window.toggle_decoration()
 
     def handler_alt_shift_delete(self):
         "Handles alt+shift+delete, quits the listening"

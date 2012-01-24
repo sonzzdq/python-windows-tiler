@@ -7,8 +7,6 @@ if os.path.isfile("config.ini"):
 
     config.read("config.ini")
 
-    print("config")
-
 else:
 
     config["global"] = {
@@ -17,10 +15,8 @@ else:
 
     config["window"] = {
             "float" : "progman;#32770"
-            , "decorate" : "Chrome_WidgetWin_0"
+            , "decorate" : "Chrome_WidgetWin_0;ConsoleWindowClass"
     }
 
     with open("config.ini", "w") as configfile:
         config.write(configfile)
-   
-    print("no config")
