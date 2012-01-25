@@ -10,18 +10,27 @@ class Tiler(object):
 
         self.layouts = []
 
-        self.layouts.append(Layout("Vertical"
+        self.layouts.append(Layout(
+            "Vertical"
             ,self.vertical_tile
             ,self.width
         ))
 
-        self.layouts.append(Layout("Horizontal"
+        self.layouts.append(Layout(
+            "Horizontal"
             ,self.horizontal_tile
             ,self.height
         ))
 
-        self.layouts.append(Layout("Fullscreen"
+        self.layouts.append(Layout(
+            "Fullscreen"
             ,self.fullscreen_tile
+            ,1
+        ))
+
+        self.layouts.append(Layout(
+            "Float"
+            ,self.float
             ,1
         ))
 
@@ -54,21 +63,50 @@ class Tiler(object):
         Removes the window from the list and retiles the setup
         """
 
-        self.windows.remove(window)
-        self.tile_windows()
+        if window in self.windows:
+
+            window.decorate()
+            window.update()
+
+            self.windows.remove(window)
+            self.tile_windows()
 
     def add_window(self, window):
         """
         Adds the window to the list and retiles the setup
         """
 
-        self.windows.append(window)
-        self.tile_windows()
+        if window not in self.windows and window.validate():
 
+            #undecorate and update the window
+            window.undecorate()
+
+            window.update()
+
+            self.windows.append(window)
+            self.tile_windows()
 
     ############################################
     ### Start of the commands
     ############################################
+
+    def tile_window(self, window):
+        """
+        Pushes a window into the tiler
+        """
+
+        window.floating = False
+
+        self.add_window(window)
+
+    def float_window(self, window):
+        """
+        Starts floating a window
+        """
+
+        window.floating = True
+
+        self.remove_window(window)
 
     def decrease_masterarea(self):
         """
@@ -414,3 +452,12 @@ class Tiler(object):
                 self.tile_windows()
 
                 break
+
+    def float(self):
+
+        for window in self.windows:
+
+            if not window.is_decorated():
+
+                window.decorate()
+                window.update()

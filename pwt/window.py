@@ -97,13 +97,17 @@ class Window(object):
 
         try:
 
-            style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
+            if not self.decorated:
 
-            style -= WS_CAPTION 
+                style = win32gui.GetWindowLong(self.hWindow, GWL_STYLE)
 
-            win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
+                style -= WS_CAPTION 
 
-            return True
+                win32gui.SetWindowLong(self.hWindow, GWL_STYLE, style)
+
+                return True
+
+            return False
 
         except win32gui.error:
 

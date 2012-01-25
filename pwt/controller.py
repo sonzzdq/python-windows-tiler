@@ -116,7 +116,7 @@ class Controller(object):
                 #if lparam is an add event
                 elif message[1][2] in self.ADD_EVENTS:
 
-                    self.handle_add_event(Window(message[1][3]))
+                    self.current_tiler.add_window(Window(message[1][3]))
                     
                 #if lparam is a remove event
                 elif message[1][2] in self.REMOVE_EVENTS:
@@ -147,32 +147,12 @@ class Controller(object):
             #Remove icon
             self.notifyicon.destroy()
 
-    def handle_add_event(self, window):
-        "Triggered when a window has to be added"
-
-        if window not in self.groupwindows and window.validate():
-
-            tiler = self.current_tiler
-
-            #undecorate and update the window
-            if not window.decorated:
-                print(window.classname)
-                window.undecorate()
-
-            window.update()
-
-            #append and tile retile the windows
-            self.current_tiler.add_window(window)
-
     def handle_remove_event(self, window, monitor):
         "Triggered when a window needs to be removed"
 
         tiler = monitor.tilers[self.group]
 
-        if window in tiler.windows:
-
-            tiler.windows.remove(window)
-            tiler.tile_windows()
+        tiler.remove_window(window)
 
     def decorate_all_tiledwindows(self):
         "Decorates all windows in the tiler's memory"
@@ -546,9 +526,7 @@ class Controller(object):
     def handler_alt_shift_D(self):
         "Handles alt+shift+D, toggles decorations"
 
-        window = Window.focused_window()
-        if not window.decorated:
-            window.toggle_decoration()
+        Window.focused_window().toggle_decoration()
 
     def handler_alt_shift_delete(self):
         "Handles alt+shift+delete, quits the listening"
@@ -567,14 +545,20 @@ class Controller(object):
         self.current_tiler.tile_windows()
 
     def handler_alt_S(self):
-        "Handles alt+V, hides taskbar"
 
         print(Window.focused_window().classname)
+
+    def handler_alt_T(self):
+
+        self.current_tiler.tile_window(Window.focused_window())
+
+    def handler_alt_shift_T(self):
+
+        self.current_tiler.float_window(Window.focused_window())
 
     def add_hotkeys_to_notifyicon(self):
         """
         Adds all the hotkeys to the notifyicon
-        If you can't avoid ugly code you can do your very best to hide it :c
         """
 
         self.notifyicon.hotkeys.append(Hotkey(1
@@ -766,3 +750,13 @@ class Controller(object):
             , MOD_ALT 
             , ord("S")
             , self.handler_alt_S))
+
+        self.notifyicon.hotkeys.append(Hotkey(39
+            , MOD_ALT  
+            , ord("T")
+            , self.handler_alt_T))
+
+        self.notifyicon.hotkeys.append(Hotkey(40
+            , MOD_ALT  + MOD_SHIFT
+            , ord("T")
+            , self.handler_alt_shift_T))

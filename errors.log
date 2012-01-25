@@ -105,3 +105,57 @@
 2012-01-24 23:49:01,743 - INFO - START controller
 2012-01-24 23:50:22,286 - INFO - START controller
 2012-01-24 23:52:46,418 - INFO - START controller
+2012-01-24 23:56:29,815 - INFO - START controller
+2012-01-25 00:04:26,788 - INFO - START controller
+2012-01-25 00:05:39,020 - INFO - START controller
+2012-01-25 00:11:19,892 - INFO - START controller
+2012-01-25 00:12:58,325 - INFO - START controller
+2012-01-25 00:13:33,707 - INFO - START controller
+2012-01-25 00:15:08,575 - INFO - START controller
+2012-01-25 00:15:24,842 - INFO - START controller
+2012-01-25 00:29:50,454 - INFO - START controller
+2012-01-25 00:29:58,845 - INFO - START controller
+2012-01-25 00:30:29,851 - INFO - START controller
+2012-01-25 00:30:38,977 - INFO - START controller
+2012-01-25 00:30:58,204 - INFO - START controller
+2012-01-25 00:31:16,187 - INFO - START controller
+2012-01-25 00:31:26,901 - INFO - START controller
+2012-01-25 00:31:35,851 - INFO - START controller
+2012-01-25 00:32:37,194 - INFO - START controller
+2012-01-25 00:33:16,937 - INFO - START controller
+2012-01-25 00:33:20,221 - INFO - START controller
+2012-01-25 00:34:59,121 - INFO - START controller
+2012-01-25 00:35:05,944 - INFO - START controller
+2012-01-25 00:35:16,331 - INFO - START controller
+2012-01-25 00:36:05,137 - INFO - START controller
+2012-01-25 00:39:29,996 - INFO - START controller
+2012-01-25 00:42:41,849 - INFO - START controller
+2012-01-25 00:43:05,911 - INFO - START controller
+2012-01-25 00:44:32,025 - INFO - START controller
+2012-01-25 00:44:48,904 - INFO - START controller
+2012-01-25 00:46:05,381 - INFO - START controller
+2012-01-25 00:49:21,871 - INFO - START controller
+2012-01-25 00:51:37,164 - INFO - START controller
+2012-01-25 00:53:31,660 - INFO - START controller
+2012-01-25 00:53:53,813 - INFO - START controller
+2012-01-25 00:54:42,290 - INFO - START controller
+2012-01-25 00:58:14,809 - INFO - START controller
+2012-01-25 01:00:57,309 - INFO - START controller
+2012-01-25 01:02:59,407 - INFO - START controller
+2012-01-25 01:05:51,127 - INFO - START controller
+2012-01-25 01:07:48,220 - INFO - START controller
+2012-01-25 01:08:28,062 - INFO - START controller
+2012-01-25 01:08:52,684 - INFO - START controller
+2012-01-25 01:10:53,880 - INFO - START controller
+2012-01-25 01:11:59,727 - INFO - START controller
+2012-01-25 01:15:17,226 - INFO - START controller
+2012-01-25 01:15:40,905 - INFO - START controller
+2012-01-25 01:17:45,063 - INFO - START controller
+2012-01-25 01:18:11,861 - INFO - START controller
+2012-01-25 01:18:52,967 - INFO - START controller
+2012-01-25 01:19:07,602 - ERROR - Error while decorating window
+Traceback (most recent call last):
+  File "E:\Python\PythonWindowsTilerV0.2\pwt\window.py", line 305, in update
+    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
+pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
+2012-01-25 01:19:09,530 - INFO - START controller
