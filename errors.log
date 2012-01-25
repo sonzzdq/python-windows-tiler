@@ -159,3 +159,13 @@ Traceback (most recent call last):
     ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
 pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
 2012-01-25 01:19:09,530 - INFO - START controller
+2012-01-25 01:20:05,073 - ERROR - Error while decorating window
+Traceback (most recent call last):
+  File "E:\Python\PythonWindowsTilerV0.2\pwt\window.py", line 305, in update
+    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
+pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
+2012-01-25 01:20:14,910 - ERROR - Error while decorating window
+Traceback (most recent call last):
+  File "E:\Python\PythonWindowsTilerV0.2\pwt\window.py", line 305, in update
+    ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
+pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
