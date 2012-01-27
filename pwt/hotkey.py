@@ -100,8 +100,6 @@ class Hotkey(object):
                 , self.modifiers
                 , self.virtualkeys):
 
-            print("register", self.keyId, self.modifiers, self.virtualkeys, self.execute)
-
             return True
 
         else:
