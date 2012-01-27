@@ -1,3 +1,4 @@
+#@PydevCodeAnalysisIgnore
 import ctypes
 import logging
 import win32gui
@@ -31,9 +32,11 @@ class Window(object):
         self.hotkeys = []
 
         self.hWindow = hWindow
+        
+        config = pwt.config.config
 
-        self.floating = self.classname in pwt.config.config["window"]["float"].split(";")
-        self.decorated = self.classname in pwt.config.config["window"]["decorate"].split(";")
+        self.floating = self.classname in config["window"]["float"].split(";")
+        self.decorated = self.classname in config["window"]["decorate"].split(";")
 
     def __eq__(self, other):
 

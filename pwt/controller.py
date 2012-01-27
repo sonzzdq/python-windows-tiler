@@ -1,3 +1,4 @@
+#@PydevCodeAnalysisIgnore
 from pwt.notifyicon     import NotifyIcon
 from pwt.hotkey         import Hotkey
 from pwt.monitor        import Monitor
@@ -8,11 +9,7 @@ from pwt.utility        import Utility
 import pwt.config
 
 ##KEYS
-from win32con import MOD_ALT
-from win32con import MOD_SHIFT
-from win32con import VK_RETURN
-from win32con import VK_DELETE
-from win32con import VK_SPACE
+from pwt.hotkey import keys
 
 ##HOTKEY EVENTS
 from win32con import WM_HOTKEY
@@ -42,7 +39,6 @@ class Controller(object):
                 , #placeholder
         )
 
-        #notifyicon
         self.notifyicon = NotifyIcon(name
                 , self.icon
         )
@@ -54,7 +50,6 @@ class Controller(object):
 
         self.taskbar = Taskbar()
 
-        #monitors
         self.monitors = Monitor.display_monitors()
 
         if self.monitors is not None:
@@ -78,7 +73,7 @@ class Controller(object):
         return Monitor.current_monitor_from_list(self.monitors).tilers[self.group]
 
     @property
-    def groupwindows(self):
+    def current_group_windows(self):
         "returns all the windows of the current group"
 
         windows = []
@@ -110,7 +105,7 @@ class Controller(object):
                 #if message is WM_HOTKEY
                 if message[1][1] == WM_HOTKEY:
 
-                    #execute the corresponding hotkeyhandler using the id
+                    #execute the corresponding hotkeycmd using the id
                     self.notifyicon.hotkeys[message[1][2] - 1].execute()
 
                 #if lparam is an add event
@@ -215,129 +210,108 @@ class Controller(object):
                 targetTiler.windows.append(window)
 
     ###
-    #Hotkey handlers
+    #Hotkey cmds
     ###
 
-    def handler_alt_H(self):
-        "Handles alt+H, decreases the masterwidth"
+    def cmd_decrease_master_size(self):
 
-        self.current_tiler.decrease_masterarea()
+        self.current_tiler.decrease_master_size()
 
-    def handler_alt_L(self):
-        "Handles alt+L, increases the masterwidth"
+    def cmd_increase_master_size(self):
 
-        self.current_tiler.increase_masterarea()
+        self.current_tiler.increase_master_size()
 
-    def handler_alt_J(self):
-        "Handles alt+J, sets focus on the next window"
+    def cmd_focus_next_window(self):
 
         self.current_tiler.focus_next()
 
-    def handler_alt_K(self):
-        "Handles alt+K, sets focus on the previous window"
+    def cmd_focus_previous_window(self):
 
         self.current_tiler.focus_previous()
 
-    def handler_alt_return(self):
-        "Handles alt+RETURN, sets focus on the masterarea"
+    def cmd_focus_primary_window(self):
 
         self.current_tiler.focus_primary()
 
-    def handler_alt_shift_J(self):
-        "Handles alt+shift+J, switches the window to the next position"
+    def cmd_shift_focused_window_down(self):
 
-        self.current_tiler.move_focused_to_next()
+        self.current_tiler.shift_focused_window_down()
 
-    def handler_alt_shift_K(self):
-        "Handles alt+shift+K, switches the window to the previous position"
+    def cmd_shift_focused_window_up(self):
 
-        self.current_tiler.move_focused_to_previous()
+        self.current_tiler.shift_focused_window_up()
 
-    def handler_alt_shift_return(self):
-        "Handles alt+shift+RETURN, switches the window to the masterarea"
+    def cmd_shift_focused_window_to_primary(self):
 
         self.current_tiler.make_focused_primary()
 
-    def handler_alt_shift_L(self):
-        "Handles alt+shift+L, decreases the masterarea size"
+    def cmd_remove_window_from_master(self):
 
-        self.current_tiler.decrease_masterarea_size()
+        self.current_tiler.remove_window_from_master()
 
-    def handler_alt_shift_H(self):
-        "Handles alt+shift+H, increases the masterarea size"
+    def cmd_add_window_to_master(self):
 
-        self.current_tiler.increase_masterarea_size()
+        self.current_tiler.add_window_to_master()
 
-    def handler_alt_shift_C(self):
-        "Handles alt+shift+C, closes the current window"
+    def cmd_close_focused_window(self):
 
         Window.focused_window().close()
 
-    def handler_alt_one(self):
-        "Handles alt+1, switches group"
+    def cmd_switch_to_group_1(self):
         
         if self.group != 0:
 
             self.switch_group(0)
 
-    def handler_alt_two(self):
-        "Handles alt+2, switches group"
+    def cmd_switch_to_group_2(self):
         
         if self.group != 1:
 
             self.switch_group(1)
 
-    def handler_alt_three(self):
-        "Handles alt+3, switches group"
+    def cmd_switch_to_group_3(self):
         
         if self.group != 2:
 
             self.switch_group(2)
 
-    def handler_alt_four(self):
-        "Handles alt+4, switches group"
+    def cmd_switch_to_group_4(self):
         
         if self.group != 3:
 
             self.switch_group(3)
 
-    def handler_alt_five(self):
-        "Handles alt+5, switches group"
+    def cmd_switch_to_group_5(self):
         
         if self.group != 4:
 
             self.switch_group(4)
 
-    def handler_alt_six(self):
-        "Handles alt+6, switches group"
+    def cmd_switch_to_group_6(self):
         
         if self.group != 5:
 
             self.switch_group(5)
 
-    def handler_alt_seven(self):
-        "Handles alt+7, switches group"
+    def cmd_switch_to_group_7(self):
         
         if self.group != 6:
 
             self.switch_group(6)
 
-    def handler_alt_eight(self):
-        "Handles alt+8, switches group"
+    def cmd_switch_to_group_8(self):
         
         if self.group != 7:
 
             self.switch_group(7)
 
-    def handler_alt_nine(self):
-        "Handles alt+9, switches group"
+    def cmd_switch_to_group_9(self):
         
         if self.group != 8:
 
             self.switch_group(8)
 
-    def handler_alt_shift_one(self):
-        "Handles alt+shift+1, sends window to appropriate tiler"
+    def cmd_send_to_group_1(self):
 
         if self.group != 0:
 
@@ -347,8 +321,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 0)
 
-    def handler_alt_shift_two(self):
-        "Handles alt+shift+2, sends window to appropriate tiler"
+    def cmd_send_to_group_2(self):
 
         if self.group != 1:
 
@@ -358,8 +331,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 1)
 
-    def handler_alt_shift_three(self):
-        "Handles alt+shift+3, sends window to appropriate tiler"
+    def cmd_send_to_group_3(self):
 
         if self.group != 2:
 
@@ -369,8 +341,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 2)
 
-    def handler_alt_shift_four(self):
-        "Handles alt+shift+4, sends window to appropriate tiler"
+    def cmd_send_to_group_4(self):
 
         if self.group != 3:
 
@@ -380,8 +351,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 3)
 
-    def handler_alt_shift_five(self):
-        "Handles alt+shift+5, sends window to appropriate tiler"
+    def cmd_send_to_group_5(self):
 
         if self.group != 4:
 
@@ -391,8 +361,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 4)
 
-    def handler_alt_shift_six(self):
-        "Handles alt+shift+6, sends window to appropriate tiler"
+    def cmd_send_to_group_6(self):
 
         if self.group != 5:
 
@@ -402,8 +371,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 5)
 
-    def handler_alt_shift_seven(self):
-        "Handles alt+shift+7, sends window to appropriate tiler"
+    def cmd_send_to_group_7(self):
 
         if self.group != 6:
 
@@ -413,8 +381,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 6)
 
-    def handler_alt_shift_eight(self):
-        "Handles alt+shift+8, sends window to appropriate tiler"
+    def cmd_send_to_group_8(self):
 
         if self.group != 7:
 
@@ -424,8 +391,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 7)
 
-    def handler_alt_shift_nine(self):
-        "Handles alt+shift+9, sends window to appropriate tiler"
+    def cmd_send_to_group_9(self):
 
         if self.group != 8:
 
@@ -435,8 +401,7 @@ class Controller(object):
 
                 self.send_window_to_tiler(window, 8)
 
-    def handler_alt_I(self):
-        "Handles alt+I, changes focus to the next monitor"
+    def cmd_focus_next_monitor(self):
 
         monitor = Monitor.current_monitor_from_list(self.monitors) 
 
@@ -450,8 +415,7 @@ class Controller(object):
 
                 nextMonitor.tilers[self.group].remove_window(window)
 
-    def handler_alt_U(self):
-        "Handles alt+U, changes focus to the previous monitor"
+    def cmd_focus_previous_monitor(self):
 
         monitor = Monitor.current_monitor_from_list(self.monitors) 
 
@@ -465,8 +429,7 @@ class Controller(object):
 
                 previousMonitor.tilers[self.group].remove_window(window)
 
-    def handler_alt_shift_I(self):
-        "Handles alt+shift_I switches window to the next monitor"
+    def cmd_shift_to_next_monitor(self):
 
         window = Window.focused_window()
 
@@ -490,8 +453,7 @@ class Controller(object):
 
                 window.focus()
 
-    def handler_alt_shift_U(self):
-        "Handles alt+shift_U switches window to the previous monitor"
+    def cmd_shift_to_previous_monitor(self):
 
         window = Window.focused_window()
 
@@ -515,27 +477,23 @@ class Controller(object):
 
                 window.focus()
 
-    def handler_alt_space(self):
-        "Handles alt+space, grabs the next tile layout"
+    def cmd_choose_next_layout(self):
 
         self.current_tiler.next_layout()
-        self.notifyicon.show_balloon(self.current_tiler.currentLayout.name
+        self.notifyicon.show_balloon(
+                 self.current_tiler.currentLayout.name
                 , "LAYOUT"
         )
 
-    def handler_alt_shift_D(self):
-        "Handles alt+shift+D, toggles decorations"
+    def cmd_toggle_focused_window_decoration(self):
 
         Window.focused_window().toggle_decoration()
 
-    def handler_alt_shift_delete(self):
-        "Handles alt+shift+delete, quits the listening"
+    def cmd_stop_pythonwindowstiler(self):
         
-        #stop the polling
         self.stop = True
 
-    def handler_alt_V(self):
-        "Handles alt+V, hides taskbar"
+    def cmd_toggle_taskbar_visibility(self):
         
         self.taskbar.toggle_visibility()
 
@@ -544,219 +502,40 @@ class Controller(object):
 
         self.current_tiler.tile_windows()
 
-    def handler_alt_S(self):
+    def cmd_print_focused_window_classname(self):
 
         print(Window.focused_window().classname)
 
-    def handler_alt_T(self):
+    def cmd_tile_focused_window(self):
 
         self.current_tiler.tile_window(Window.focused_window())
 
-    def handler_alt_shift_T(self):
+    def cmd_float_focused_window(self):
 
         self.current_tiler.float_window(Window.focused_window())
-
+        
     def add_hotkeys_to_notifyicon(self):
-        """
-        Adds all the hotkeys to the notifyicon
-        """
-
-        self.notifyicon.hotkeys.append(Hotkey(1
-            , MOD_ALT
-            , ord("H")
-            , self.handler_alt_H))
-
-        self.notifyicon.hotkeys.append(Hotkey(2
-            , MOD_ALT
-            , ord("L")
-            , self.handler_alt_L))
-
-        self.notifyicon.hotkeys.append(Hotkey(3
-            , MOD_ALT
-            , ord("J")
-            , self.handler_alt_J))
-
-        self.notifyicon.hotkeys.append(Hotkey(4
-            , MOD_ALT
-            , ord("K")
-            , self.handler_alt_K))
-
-        self.notifyicon.hotkeys.append(Hotkey(5
-            , MOD_ALT
-            , VK_RETURN
-            , self.handler_alt_return))
-
-        self.notifyicon.hotkeys.append(Hotkey(6
-            , MOD_ALT + MOD_SHIFT
-            , ord("J")
-            , self.handler_alt_shift_J))
-
-        self.notifyicon.hotkeys.append(Hotkey(7
-            , MOD_ALT + MOD_SHIFT
-            , ord("K")
-            , self.handler_alt_shift_K))
-
-        self.notifyicon.hotkeys.append(Hotkey(8
-            , MOD_ALT + MOD_SHIFT
-            , VK_RETURN
-            , self.handler_alt_shift_return))
-
-        self.notifyicon.hotkeys.append(Hotkey(9
-            , MOD_ALT + MOD_SHIFT
-            , ord("L")
-            , self.handler_alt_shift_L))
-
-        self.notifyicon.hotkeys.append(Hotkey(10
-            , MOD_ALT + MOD_SHIFT
-            , ord("H")
-            , self.handler_alt_shift_H))
-
-        self.notifyicon.hotkeys.append(Hotkey(11
-            , MOD_ALT + MOD_SHIFT
-            , ord("C")
-            , self.handler_alt_shift_C))
-
-        self.notifyicon.hotkeys.append(Hotkey(12
-            , MOD_ALT
-            , ord("1")
-            , self.handler_alt_one))
-
-        self.notifyicon.hotkeys.append(Hotkey(13
-            , MOD_ALT
-            , ord("2")
-            , self.handler_alt_two))
-
-        self.notifyicon.hotkeys.append(Hotkey(14
-            , MOD_ALT
-            , ord("3")
-            , self.handler_alt_three))
-
-        self.notifyicon.hotkeys.append(Hotkey(15
-            , MOD_ALT
-            , ord("4")
-            , self.handler_alt_four))
-
-        self.notifyicon.hotkeys.append(Hotkey(16
-            , MOD_ALT
-            , ord("5")
-            , self.handler_alt_five))
-
-        self.notifyicon.hotkeys.append(Hotkey(17
-            , MOD_ALT
-            , ord("6")
-            , self.handler_alt_six))
-
-        self.notifyicon.hotkeys.append(Hotkey(18
-            , MOD_ALT
-            , ord("7")
-            , self.handler_alt_seven))
-
-        self.notifyicon.hotkeys.append(Hotkey(19
-            , MOD_ALT
-            , ord("8")
-            , self.handler_alt_eight))
-
-        self.notifyicon.hotkeys.append(Hotkey(20
-            , MOD_ALT
-            , ord("9")
-            , self.handler_alt_nine))
-
-        self.notifyicon.hotkeys.append(Hotkey(21
-            , MOD_ALT + MOD_SHIFT
-            , ord("1")
-            , self.handler_alt_shift_one))
-
-        self.notifyicon.hotkeys.append(Hotkey(22
-            , MOD_ALT + MOD_SHIFT
-            , ord("2")
-            , self.handler_alt_shift_two))
-
-        self.notifyicon.hotkeys.append(Hotkey(23
-            , MOD_ALT + MOD_SHIFT
-            , ord("3")
-            , self.handler_alt_shift_three))
-
-        self.notifyicon.hotkeys.append(Hotkey(24
-            , MOD_ALT + MOD_SHIFT
-            , ord("4")
-            , self.handler_alt_shift_four))
-
-        self.notifyicon.hotkeys.append(Hotkey(25
-            , MOD_ALT + MOD_SHIFT
-            , ord("5")
-            , self.handler_alt_shift_five))
-
-        self.notifyicon.hotkeys.append(Hotkey(26
-            , MOD_ALT + MOD_SHIFT
-            , ord("6")
-            , self.handler_alt_shift_six))
-
-        self.notifyicon.hotkeys.append(Hotkey(27
-            , MOD_ALT + MOD_SHIFT
-            , ord("7")
-            , self.handler_alt_shift_seven))
-
-        self.notifyicon.hotkeys.append(Hotkey(28
-            , MOD_ALT + MOD_SHIFT
-            , ord("8")
-            , self.handler_alt_shift_eight))
-
-        self.notifyicon.hotkeys.append(Hotkey(29
-            , MOD_ALT + MOD_SHIFT
-            , ord("9")
-            , self.handler_alt_shift_nine))
-
-        self.notifyicon.hotkeys.append(Hotkey(30
-            , MOD_ALT
-            , ord("I")
-            , self.handler_alt_I))
-
-        self.notifyicon.hotkeys.append(Hotkey(31
-            , MOD_ALT
-            , ord("U")
-            , self.handler_alt_U))
-
-        self.notifyicon.hotkeys.append(Hotkey(32
-            , MOD_ALT + MOD_SHIFT
-            , ord("I")
-            , self.handler_alt_shift_I))
-
-        self.notifyicon.hotkeys.append(Hotkey(33
-            , MOD_ALT + MOD_SHIFT
-            , ord("U")
-            , self.handler_alt_shift_U))
-
-        self.notifyicon.hotkeys.append(Hotkey(34
-            , MOD_ALT + MOD_SHIFT
-            , ord("D")
-            , self.handler_alt_shift_D))
-
-        self.notifyicon.hotkeys.append(Hotkey(35
-            , MOD_ALT
-            , VK_SPACE
-            , self.handler_alt_space))
-
-        self.notifyicon.hotkeys.append(Hotkey(36
-            , MOD_ALT + MOD_SHIFT
-            , VK_DELETE
-            , self.handler_alt_shift_delete))
-
-        self.notifyicon.hotkeys.append(Hotkey(37
-            , MOD_ALT 
-            , ord("V")
-            , self.handler_alt_V))
-
-        self.notifyicon.hotkeys.append(Hotkey(38
-            , MOD_ALT 
-            , ord("S")
-            , self.handler_alt_S))
-
-        self.notifyicon.hotkeys.append(Hotkey(39
-            , MOD_ALT  
-            , ord("T")
-            , self.handler_alt_T))
-
-        self.notifyicon.hotkeys.append(Hotkey(40
-            , MOD_ALT  + MOD_SHIFT
-            , ord("T")
-            , self.handler_alt_shift_T))
+        
+        config = pwt.config.config
+        
+        for i, func in enumerate(config["hotkey"]):
+            
+            keycombos = config["hotkey"][func].split("+")
+            
+            mods = sum([keys[x] for x in keycombos[:-1]])
+            
+            try: 
+                
+                vk = keys[keycombos[-1]]
+                
+            except KeyError:
+                
+                vk = ord(keycombos[-1].upper())
+                
+            self.notifyicon.hotkeys.append(Hotkey(
+                    i+1
+                    , mods
+                    , vk
+                    , getattr(self, "cmd_" + func)
+            ))
+        

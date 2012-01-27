@@ -108,7 +108,7 @@ class Tiler(object):
 
         self.remove_window(window)
 
-    def decrease_masterarea(self):
+    def decrease_master_size(self):
         """
         Decreases the masterarea width by 100px 
         Sets a border at 200px else windows might overlap 
@@ -122,7 +122,7 @@ class Tiler(object):
 
             self.tile_windows()
 
-    def increase_masterarea(self):
+    def increase_master_size(self):
         """
         Increases the masterarea width by 100px
         Sets a borderat 200px else windows might overlap 
@@ -183,7 +183,7 @@ class Tiler(object):
                 del self.windows[0]
                 self.tile_windows()
 
-    def move_focused_to_next(self):
+    def shift_focused_window_down(self):
         """
         Switches the window to the next position
         """
@@ -212,7 +212,7 @@ class Tiler(object):
 
                 self.remove_window(window)
 
-    def move_focused_to_previous(self):
+    def shift_focused_window_up(self):
         """
         Switches the window to the previous position
         """
@@ -265,7 +265,7 @@ class Tiler(object):
 
                 self.remove_window(window)
 
-    def increase_masterarea_size(self):
+    def add_window_to_master(self):
         """
         Increase the masterarea size by one
         """
@@ -277,7 +277,7 @@ class Tiler(object):
 
             self.tile_windows()
 
-    def decrease_masterarea_size(self):
+    def remove_window_from_master(self):
         """
         Decreases the masterarea size by one
         """
@@ -306,7 +306,7 @@ class Tiler(object):
 
         if not Window.focused_window().center_cursor():
 
-            self.remove_window(window)
+            self.remove_window(Window.focused_window())
 
     ###
     # TILE LAYOUTS
