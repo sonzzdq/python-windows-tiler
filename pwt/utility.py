@@ -6,20 +6,12 @@ class Utility(object):
         Returns the item after item
         Returns None if item isn't in collection
         """
-
+        
         if item in collection:
-
-            if item == collection[-1]:
-
-                return collection[0]
-            
-            else:
-
-                return collection[collection.index(item) + 1]
-
-        else:
-
-            return None
+        
+            return collection[(collection.index(item) + 1) % len(collection)]
+        
+        return None
 
     @staticmethod
     def previous_item(collection, item):
@@ -30,14 +22,6 @@ class Utility(object):
 
         if item in collection:
 
-            if item == collection[0]:
+            return collection[collection.index(item) - 1]
 
-                return collection[-1]
-
-            else:
-
-                return collection[collection.index(item) - 1]
-
-        else:
-
-            return None
+        return None

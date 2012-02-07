@@ -11,12 +11,12 @@ import pwt.config
 ##KEYS
 from pwt.hotkey import keys
 
-##HOTKEY EVENTS
 from win32con import WM_HOTKEY
-
-##TILE EVENTS
 from win32con import HSHELL_WINDOWCREATED
 from win32con import HSHELL_WINDOWDESTROYED
+from win32con import CF_TEXT
+
+import win32clipboard
 
 class Controller(object):
 
@@ -167,13 +167,12 @@ class Controller(object):
 
     def switch_group(self, i):
         "Switch the current group into group i"
-
+        
         for monitor in self.monitors:
 
             for window in monitor.tilers[self.group].windows:
 
                 window.hide()
-
             
             for window in monitor.tilers[i].windows:
 
@@ -503,6 +502,11 @@ class Controller(object):
         self.current_tiler.tile_windows()
 
     def cmd_print_focused_window_classname(self):
+
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardText(Window.focused_window().classname)
+        win32clipboard.CloseClipboard()
 
         print(Window.focused_window().classname)
 

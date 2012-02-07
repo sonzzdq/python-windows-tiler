@@ -1,4 +1,4 @@
-#logging every exception
+#@PydevCodeAnalysisIgnore
 import logging
 import win32api
 
