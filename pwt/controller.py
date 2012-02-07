@@ -110,8 +110,12 @@ class Controller(object):
 
                 #if lparam is an add event
                 elif message[1][2] in self.ADD_EVENTS:
+                    
+                    window = Window(message[1][3])
 
-                    self.current_tiler.add_window(Window(message[1][3]))
+                    if window not in self.current_group_windows:
+                        
+                        self.current_tiler.add_window(window)
                     
                 #if lparam is a remove event
                 elif message[1][2] in self.REMOVE_EVENTS:

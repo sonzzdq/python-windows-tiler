@@ -301,3 +301,15 @@ Traceback (most recent call last):
   File "E:\Python\PWT\src\pwt\window.py", line 308, in update
     ,SWP_FRAMECHANGED + SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER
 pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
+2012-02-07 03:44:41,176 - INFO - START controller
+2012-02-07 03:45:53,309 - INFO - START controller
+2012-02-07 03:46:08,351 - INFO - START controller
+2012-02-07 03:47:11,691 - INFO - START controller
+2012-02-07 03:47:40,088 - INFO - START controller
+2012-02-07 03:56:22,964 - INFO - START controller
+2012-02-07 03:56:52,296 - INFO - START controller
+2012-02-07 04:00:09,131 - INFO - START controller
+2012-02-07 04:01:47,842 - INFO - START controller
+2012-02-07 04:03:08,578 - INFO - START controller
+2012-02-07 04:03:48,559 - INFO - START controller
+2012-02-07 04:04:15,203 - INFO - START controller

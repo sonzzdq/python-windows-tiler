@@ -65,9 +65,6 @@ class Tiler(object):
 
         if window in self.windows:
 
-            window.decorate()
-            window.update()
-
             self.windows.remove(window)
             self.tile_windows()
 
@@ -77,11 +74,6 @@ class Tiler(object):
         """
 
         if window not in self.windows and window.validate():
-
-            #undecorate and update the window
-            window.undecorate()
-
-            window.update()
 
             self.windows.append(window)
             self.tile_windows()
