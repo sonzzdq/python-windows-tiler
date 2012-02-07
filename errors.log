@@ -313,3 +313,6 @@ pywintypes.error: (1400, 'SetWindowPos', 'Invalid window handle.')
 2012-02-07 04:03:08,578 - INFO - START controller
 2012-02-07 04:03:48,559 - INFO - START controller
 2012-02-07 04:04:15,203 - INFO - START controller
+2012-02-07 04:06:29,536 - INFO - START controller
+2012-02-07 04:06:46,880 - INFO - START controller
+2012-02-07 04:07:15,493 - INFO - START controller

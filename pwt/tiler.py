@@ -89,6 +89,9 @@ class Tiler(object):
 
         window.floating = False
 
+        window.undecorate()
+        window.update()
+        
         self.add_window(window)
 
     def float_window(self, window):
@@ -98,6 +101,9 @@ class Tiler(object):
 
         window.floating = True
 
+        window.decorate()
+        window.update()
+        
         self.remove_window(window)
 
     def decrease_master_size(self):
